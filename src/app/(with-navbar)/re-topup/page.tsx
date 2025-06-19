@@ -1,0 +1,183 @@
+
+"use client";
+
+import { useEffect, useState } from "react";
+import {
+  getTotalEarningWithChildren,
+  getLockTopUp,
+  getAddressById,
+} from "@/components/registerUser";
+import { useRegister } from "@/components/usehooks/usehook";
+import { useSelector } from "react-redux";
+import { RootState } from "@/Redux/store";
+
+// Dynamically generate cycles based on total amount
+function generateCycles(maxAmount: number) {
+  const generated = [];
+  let mainStart = 0;
+
+  while (true) {
+    const mainEnd = mainStart + 200;
+    const miniEnd = mainEnd + 50;
+
+    generated.push({ mainStart, mainEnd, miniEnd });
+
+    if (miniEnd > maxAmount) break;
+    mainStart = miniEnd;
+  }
+
+  return generated;
+}
+
+export default function ProgressPage() {
+  const [amount, setAmount] = useState<number>(0);
+  const [locked, setLocked] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [userAddress, setUserAddress] = useState<string | undefined>()
+
+  const { signer } = useRegister();
+  const userId = useSelector((state: RootState) => state.user.userId);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!signer || !userId) return;
+
+      setLoading(true);
+      try {
+        const { userAddress, error: addressError } = await getAddressById(
+          signer,
+          userId as any
+        );
+        if (addressError) {
+          console.error("Address fetch error:", addressError);
+          return;
+        }
+        setUserAddress(userAddress as any);
+
+        const [earningRes, lockedRes] = await Promise.all([
+          getTotalEarningWithChildren(signer, userId as any),
+          getLockTopUp(signer, userAddress),
+        ]);
+
+        const numericAmount = parseFloat(earningRes.totalEarning || "0");
+        const lockedAmount = parseFloat(lockedRes.lockedAmount || "0");
+
+        // Add 11.1% to amount and round to nearest integer
+        const adjustedAmount = Math.round(numericAmount * 1.111);
+
+        setAmount(adjustedAmount);
+        setLocked(Number(lockedAmount.toFixed(6)));
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [signer, userId]);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-black via-zinc-900 to-black text-white px-4 sm:px-6 md:px-10 py-10">
+      <div className="w-full max-w-7xl mx-auto space-y-10">
+        <div className="flex justify-between items-center">
+          <div className="flex-1" />
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center flex-1">
+            Topup Progress
+          </h2>
+          <div className="flex-1 text-right text-base sm:text-lg text-purple-300 font-semibold">
+            <span className="text-white">userId: </span>{userId}
+            <br />
+            <span className="text-white">Wallet Address: </span>
+            <span className="text-xs break-all">{userAddress?.slice(0,20)}</span>
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="text-center text-gray-400 animate-pulse">
+            Loading progress...
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {generateCycles(amount).map((cycle, index) => {
+              const { mainStart, mainEnd, miniEnd } = cycle;
+
+              const mainTotal = mainEnd - mainStart;
+              const mainCurrent = Math.max(
+                0,
+                Math.min(amount - mainStart, mainTotal)
+              );
+              const mainPercent = (mainCurrent / mainTotal) * 100;
+
+              const miniTotal = miniEnd - mainEnd;
+              const miniCurrent = Math.max(
+                0,
+                Math.min(amount - mainEnd, miniTotal)
+              );
+              const miniPercent = (miniCurrent / miniTotal) * 100;
+
+              return (
+                <div
+                  key={index}
+                  className="bg-zinc-800 p-5 sm:p-6 rounded-2xl shadow-md border border-zinc-700 space-y-4"
+                >
+                  <h3 className="text-lg sm:text-xl font-semibold text-center text-gray-100">
+                    TopUp {index + 1}
+                  </h3>
+
+                  {/* Main Progress */}
+                  <div>
+                    <div className="flex justify-between items-center mb-1 text-xs sm:text-sm">
+                      <span className="text-purple-400 font-medium">
+                        Main ({mainStart} → {mainEnd})
+                      </span>
+                    </div>
+                    <div className="w-full h-3 sm:h-4 bg-zinc-700 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-purple-500 transition-all duration-700"
+                        style={{ width: `${mainPercent}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-right text-gray-400 mt-1">
+                      {mainCurrent.toFixed(2)} / {mainTotal} USDT (
+                      {mainPercent.toFixed(1)}%)
+                    </p>
+                  </div>
+
+                  {/* Mini Progress */}
+                  <div>
+                    <div className="flex justify-between items-center mb-1 text-xs sm:text-sm">
+                      <span className="text-yellow-400 font-medium">
+                        Mini ({mainEnd} → {miniEnd})
+                      </span>
+                    </div>
+                    <div className="w-full h-2.5 sm:h-3 bg-zinc-700 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-yellow-400 transition-all duration-700"
+                        style={{ width: `${miniPercent}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-right text-gray-400 mt-1">
+                      {miniCurrent.toFixed(2)} / {miniTotal} USDT (
+                      {miniPercent.toFixed(1)}%)
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {!loading && (
+          <div className="text-center mt-8">
+            <p className="text-gray-400 text-sm">Locked Top-up</p>
+            <p className="text-xl sm:text-2xl font-bold text-purple-300">
+              {locked} USDT
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
