@@ -8,8 +8,11 @@ import {
   getAddressById,
 } from "@/components/registerUser";
 import { useRegister } from "@/components/usehooks/usehook";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/Redux/store";
+import { DashboardRewards, getTotalReward } from "@/GraphQuery/query";
+import { setCircleData } from "@/Redux/store/userSlice";
+
 
 // Dynamically generate cycles based on total amount
 function generateCycles(maxAmount: number) {
@@ -34,6 +37,10 @@ export default function ProgressPage() {
   const [locked, setLocked] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [userAddress, setUserAddress] = useState<string | undefined>()
+     const circleData = useSelector((state: RootState) => state.user.circleData);
+       const [dashboardMainData, setDashboardData] = useState<DashboardRewards>();
+      const dispatch = useDispatch<any>();
+  
 
   const { signer } = useRegister();
   const userId = useSelector((state: RootState) => state.user.userId);
@@ -77,6 +84,28 @@ export default function ProgressPage() {
     fetchData();
   }, [signer, userId]);
 
+  const getLevelRewards = async (userId: string) => {
+      const data = await getTotalReward([userId]);
+      dispatch(setCircleData(data));
+      setDashboardData(data);
+      //  console.log("getLevelRewards", data);
+    }
+    useEffect(() => {
+      if (!userId) return;
+      getLevelRewards(userId)
+      // fetchLevelRewards([userId])
+      //   .then((levels) => {
+      //     const allRewards = Object.values(levels).flat();
+      //     const uniqueUserIds = new Set(allRewards.map((r) => r.fromId));
+      //     setGlobalAmount(allRewards.length * 50);
+      //     setTotalTeamAmount(allRewards.length * 50);
+      //     setTeamCount(uniqueUserIds.size);
+      //   })
+      //   .catch(console.error);
+  
+    }, [userId]);
+  
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-zinc-900 to-black text-white px-4 sm:px-6 md:px-10 py-10">
   <div className="w-full max-w-7xl mx-auto space-y-10">
@@ -90,9 +119,12 @@ export default function ProgressPage() {
       <div className="flex-1 text-right text-sm sm:text-base text-purple-300 font-semibold">
         <p><span className="text-white">User ID:</span> {userId}</p>
         <p className="break-words">
-          <span className="text-white">Wallet:</span>{" "}
-          <span className="text-xs sm:text-sm">{userAddress?.slice(0, 20)}...</span>
+         
+                  <p><span className="text-white">Wallet Address:</span> {userAddress}</p>
         </p>
+        
+                <p><span className="text-white">Total Reward: </span>${dashboardMainData?.grandTotalAmount.toString() || 0} </p>
+
       </div>
     </div>
 
@@ -127,7 +159,7 @@ export default function ProgressPage() {
               <div>
                 <div className="flex justify-between items-center mb-1 text-xs sm:text-sm">
                   <span className="text-purple-400 font-medium">
-                    Main ({mainStart} → {mainEnd})
+                    Earning Bar ({mainStart} → {mainEnd})
                   </span>
                 </div>
                 <div className="w-full h-3 sm:h-4 bg-zinc-700 rounded-full overflow-hidden">
@@ -146,7 +178,7 @@ export default function ProgressPage() {
               <div>
                 <div className="flex justify-between items-center mb-1 text-xs sm:text-sm">
                   <span className="text-yellow-400 font-medium">
-                    Mini ({mainEnd} → {miniEnd})
+                    Locking Bar ({mainEnd} → {miniEnd})
                   </span>
                 </div>
                 <div className="w-full h-2.5 sm:h-3 bg-zinc-700 rounded-full overflow-hidden">

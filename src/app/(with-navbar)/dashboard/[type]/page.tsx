@@ -83,7 +83,7 @@ export default function DashboardTablePage() {
     return [
       { label: "User Id", accessor: "userId" },
       ...(type === "referral" || type === "referral-business"
-        ? [{ label: "Referral Id", accessor: "referralId" }]
+        ? [{ label: "Sponsor ID", accessor: "referralId" }]
         : []),
       { label: "Join Date & Time", accessor: "joinDateTime" },
       { label: "Amount", accessor: "amount" },
@@ -112,8 +112,8 @@ export default function DashboardTablePage() {
   }));
 
   const tableConfigs: Record<string, { title: string; circle: string }> = {
-    referral: { title: "Direct Reward", circle: "" },
-    "referral-business": { title: "Referral Business", circle: "" },
+    referral: { title: "Sponsor Reward", circle: "" },
+    "referral-business": { title: "Sponsorer Business", circle: "" },
     "upline-income": { title: "Upline Reward", circle: "" },
     "super-upline-income": { title: "Super Upline Reward", circle: "" },
     "total-team": { title: "Total Team", circle: "" },

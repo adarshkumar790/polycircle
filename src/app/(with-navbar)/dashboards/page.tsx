@@ -204,15 +204,15 @@ const PolycircleDashboard = () => {
 
   const dashboardData = [
     { title: "Current Circle", icon: <CurrentCircleIcon />, value: "", link: "/tree/current-circle" },
-    { title: "Refrell Team", icon: <ReferralIcon />, value: `${refrelldata || 0}`, link: "/dashboard/referral" },
+    { title: "Sponsor Team", icon: <ReferralIcon />, value: `${refrelldata || 0}`, link: "/dashboard/referral" },
     { title: "Total Team", icon: <TeamIcon />, value: `${dashboardMainData?.teamCount.toString() || 0}`, link: "/total-team" },
-    { title: "Referral Business", icon: <ReferalBusnessIcon />, value: `$${refrellAmount}`, link: "/dashboard/referral-business" },
+    { title: "Sponsorer  Business", icon: <ReferalBusnessIcon />, value: `$${refrellAmount}`, link: "/dashboard/referral-business" },
     { title: "Team Business", icon: <TeamBusinessIcon />, value: `$${dashboardMainData?.teamAmount.toFixed(2) || 0}`, link: "/team-bussiness" },
     { title: "Upline Reward", icon: <Image src="/logo/upline.svg" alt="upline reward" width={100} height={100} />, value: `$${dashboardMainData?.uplineAmount.toFixed(2) || 0}`, link: "/dashboard/upline-income" },
     { title: "Super Upline Reward", icon: <Image src="/logo/super-upline.svg" alt="upline reward" width={150} height={150} />, value: `$${dashboardMainData?.superUplineAmount.toFixed(2) || 0}`, link: "/dashboard/super-upline-income" },
     { title: "Generation Reward", icon: <SupperUpplineIcon />, value: `$${generationAmount || 0}`, link: "/generation-reward" },
     { title: "Total Reward", icon: <TeamIncomeIcon />, value: `$${dashboardMainData?.grandTotalAmount.toString() || 0}`, link: "/total-reward" },
-    { title: "Re Top-Up", icon: <DirectIncomeIcon />, value: "-", link: "/re-topup" },
+    { title: "TOP-UP", icon: <DirectIncomeIcon />, value: "-", link: "/re-topup" },
   ];
 
   return (
@@ -260,7 +260,7 @@ const PolycircleDashboard = () => {
           <div className="flex items-center gap-2">
             Team Size: <span className="text-[#FFFFFF]">{dashboardMainData?.teamCount.toString() || 0}</span>
             <span className="text-purple-800">|</span>
-            <span className="text-[#FFFFFF]">Team Business: {dashboardMainData?.grandTotalAmount.toString() || 0} Active</span>
+            <span className="text-[#FFFFFF]">Team Business: ${dashboardMainData?.teamAmount.toFixed(2) || 0}</span>
           </div>
         </div>
       </div>
