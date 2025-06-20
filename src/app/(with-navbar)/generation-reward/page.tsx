@@ -8,6 +8,7 @@ import { RootState } from "@/Redux/store";
 import { getFormattedId, getUserDetailsById } from "@/components/registerUser";
 import { useRegister } from "@/components/usehooks/usehook";
 import type { RewardDistributed } from "@/GraphQuery/query";
+import Link from "next/link";
 
 type LevelData = {
   [level: number]: RewardDistributed[];
@@ -57,16 +58,16 @@ export default function RewardsPage() {
   useEffect(() => {
     const prepareData = async () => {
       if (!signer || !circleData?.levelData) return;
-      
+
       setLoading(true);
-     console.log("circle level", circleData.levelData)
+      console.log("circle level", circleData.levelData)
       const levels: LevelData = {};
       for (const levelEntry of circleData.levelData) {
         console.log("levles entry", levelEntry.level)
         const level = parseInt(levelEntry.level);
-        console.log("level",level)
+        console.log("level", level)
         if (!levels[level]) {
-          
+
           levels[level] = [];
         }
         //@ts-ignore
@@ -74,7 +75,7 @@ export default function RewardsPage() {
       }
       console.log("levels", levels)
       setLevelData(levels);
-      
+
       const uniqueFromIds = Array.from(
         new Set(Object.values(levels).flat().map((r) => r.fromUserId))
       );
@@ -126,9 +127,19 @@ export default function RewardsPage() {
 
   return (
     <div className="px-2 py-4 max-w-7xl mx-auto font-sans bg-black text-white">
-      <h1 className="text-xl md:text-3xl font-bold mt-4 text-center md:text-left">
-        Generation Reward
-      </h1>
+      <div className="flex items-center justify-between mt-4">
+        <Link href="/dashboards">
+        <button
+          className="text-white bg-purple-800 hover:bg-purple-700 px-4 py-2 rounded font-medium"
+        >
+          Back
+        </button>
+        </Link>
+        <h1 className="text-xl md:text-3xl font-bold text-center flex-1">
+          Generation Reward
+        </h1>
+        <div className="w-[80px] md:w-[120px]" /> {/* Spacer to balance layout */}
+      </div>
 
       <div className="bg-purple-900 rounded-t-md px-4 py-4 mt-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -136,19 +147,19 @@ export default function RewardsPage() {
             <div className="flex items-center gap-2">
               <label className="text-sm font-medium whitespace-nowrap">Level</label>
               <select
-  value={selectedLevel}
-  onChange={handleLevelChange}
-  className="text-white px-2 py-1 rounded border border-white bg-purple-800 text-sm"
->
-  {Object.keys(levelData)
-    .filter((lvl) => parseInt(lvl) > 0) // ✅ Skip level 0
-    .sort((a, b) => parseInt(a) - parseInt(b)) // ✅ Optional: sort levels
-    .map((lvl) => (
-      <option key={lvl} value={lvl}>
-        Level {lvl}
-      </option>
-    ))}
-</select>
+                value={selectedLevel}
+                onChange={handleLevelChange}
+                className="text-white px-2 py-1 rounded border border-white bg-purple-800 text-sm"
+              >
+                {Object.keys(levelData)
+                  .filter((lvl) => parseInt(lvl) > 0)
+                  .sort((a, b) => parseInt(a) - parseInt(b))
+                  .map((lvl) => (
+                    <option key={lvl} value={lvl}>
+                      Level {lvl}
+                    </option>
+                  ))}
+              </select>
 
             </div>
 

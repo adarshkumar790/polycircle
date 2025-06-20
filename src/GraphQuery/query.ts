@@ -692,7 +692,7 @@ async function fetchUplineData(receiverId: string) {
       }
     }
   `;
-  const res = await fetch("https://api.studio.thegraph.com/query/112968/graph/version/latest", {
+  const res = await fetch(GRAPH_API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query, variables: { receiverId } }),
@@ -726,7 +726,7 @@ async function fetchSuperUplineData(receiverId: string) {
       }
     }
   `;
-  const res = await fetch("https://api.studio.thegraph.com/query/112968/graph/version/latest", {
+  const res = await fetch(GRAPH_API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query, variables: { receiverId } }),

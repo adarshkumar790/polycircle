@@ -9,6 +9,7 @@ import { getFormattedId, getUserDetailsById } from "@/components/registerUser";
 import { useRegister } from "@/components/usehooks/usehook";
 import { getTotalReward, type DashboardRewards, type RewardDistributed } from "@/GraphQuery/query";
 import { setCircleData } from "@/Redux/store/userSlice";
+import Link from "next/link";
 
 type LevelData = {
   [level: number]: RewardDistributed[];
@@ -152,171 +153,178 @@ export default function RewardsPage() {
   
 
   return (
-    <div className="p-1 max-w-6xl mx-auto font-sans bg-black text-white">
-      <h1 className="text-xl md:text-3xl font-bold mt-4 flex justify-center md:justify-start">
-        Total Reward
-      </h1>
+    <div className="p-2 max-w-6xl mx-auto font-sans bg-black text-white">
+  {/* Header */}
+  <div className="relative flex items-center justify-between mt-4">
+    <Link href="/dashboards">
+      <button className="text-white bg-purple-800 hover:bg-purple-700 px-4 py-2 rounded font-medium text-sm md:text-base">
+        Back
+      </button>
+    </Link>
+    <h1 className="absolute left-1/2 -translate-x-1/2 text-lg sm:text-xl md:text-3xl font-bold text-center">
+      Total Reward
+    </h1>
+    <div className="w-[80px] md:w-[120px]" />
+  </div>
 
-      <div className="flex justify-center gap-4 mt-4">
-        {["generation", "upline", "superUpline"].map((type) => (
-          <button
-            key={type}
-            onClick={() => setTab(type as any)}
-            className={`px-4 py-1 rounded ${
-              tab === type ? "bg-yellow-500" : "bg-gray-700"
-            }`}
-          >
-            {type === "generation"
-              ? "Generation"
-              : type === "upline"
-              ? "Upline"
-              : "Super Upline"}
-          </button>
-        ))}
-      </div>
-
-      <div className="bg-purple-900 rounded-t-md px-4 py-4 mt-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          {tab === "generation" && (
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium">Select</label>
-              <select
-  value={selectedLevel}
-  onChange={handleLevelChange}
-  className="text-white px-2 py-1 rounded border border-white bg-purple-800 text-sm"
->
-  {Object.keys(levelData)
-    .filter((lvl) => parseInt(lvl) > 0) 
-    .sort((a, b) => parseInt(a) - parseInt(b)) 
-    .map((lvl) => (
-      <option key={lvl} value={lvl}>
-        Level {lvl}
-      </option>
+  {/* Tabs */}
+  <div className="flex flex-wrap justify-center gap-3 mt-4">
+    {["generation", "upline", "superUpline"].map((type) => (
+      <button
+        key={type}
+        onClick={() => setTab(type as any)}
+        className={`px-4 py-1 rounded text-sm sm:text-base ${
+          tab === type ? "bg-yellow-500" : "bg-gray-700"
+        }`}
+      >
+        {type === "generation"
+          ? "Generation"
+          : type === "upline"
+          ? "Upline"
+          : "Super Upline"}
+      </button>
     ))}
-</select>
-            </div>
-          )}
+  </div>
 
-          <div className="hidden sm:flex flex-1 justify-center text-sm">
-            <span>
-              <strong>
-                {tab === "generation" ? `Level ${selectedLevel + 1}` : tab}:
-              </strong>{" "}
-              {displayedRewards.length} entries | ${totalAmount.toFixed(2)}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 justify-end">
-            <label className="text-sm font-medium">Show:</label>
-            <select
-              value={entriesToShow}
-              onChange={handleEntriesChange}
-              className="bg-purple-800 border border-white text-white px-2 py-1 rounded text-sm"
-            >
-              <option value="all">All</option>
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="25">25</option>
-            </select>
-          </div>
+  {/* Controls & Summary */}
+  <div className="bg-purple-900 rounded-t-md px-4 py-4 mt-4">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      {tab === "generation" && (
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium">Select</label>
+          <select
+            value={selectedLevel}
+            onChange={handleLevelChange}
+            className="text-white px-2 py-1 rounded border border-white bg-purple-800 text-sm"
+          >
+            {Object.keys(levelData)
+              .filter((lvl) => parseInt(lvl) > 0)
+              .sort((a, b) => parseInt(a) - parseInt(b))
+              .map((lvl) => (
+                <option key={lvl} value={lvl}>
+                  Level {lvl}
+                </option>
+              ))}
+          </select>
         </div>
+      )}
 
-        <div className="mt-3 text-sm text-center sm:hidden">
+      <div className="hidden sm:flex flex-1 justify-center text-sm text-center">
+        <span>
           <strong>
-            {tab === "generation" ? `Level ${selectedLevel + 1}` : tab}:
+            {tab === "generation" ? `Level ${selectedLevel}` : tab}:
           </strong>{" "}
           {displayedRewards.length} entries | ${totalAmount.toFixed(2)}
-        </div>
-
-        <div className="mt-1 text-xs text-center text-gray-300 sm:text-left">
-          <strong>Total ({tab}):</strong> {allRewards.length} entries | $
-          {totalGlobalAmount.toFixed(2)}
-        </div>
-
-        {tab === "generation" && (
-          <div className="text-sm text-center sm:text-left mt-1 text-green-400">
-            <strong>Generation Total:</strong> ${totalGlobalAmount.toFixed(2)}
-          </div>
-        )}
-        {tab === "upline" && (
-          <div className="text-sm text-center sm:text-left mt-1 text-green-400">
-            <strong>Upline Total:</strong> $
-            {((circleData?.uplineRewards?.length || 0) * 10).toFixed(2)}
-          </div>
-        )}
-        {tab === "superUpline" && (
-          <div className="text-sm text-center sm:text-left mt-1 text-green-400">
-            <strong>Super Upline Total:</strong> $
-            {((circleData?.superUplineRewards?.length || 0) * 10).toFixed(2)}
-          </div>
-        )}
-        <div className="text-sm text-center sm:text-left mt-2 text-cyan-300">
-          <strong>Grand Total:</strong> $
-          {/* {(
-            totalGlobalAmount +
-            (circleData?.uplineRewards?.length || 0) * 10 +
-            (circleData?.superUplineRewards?.length || 0) * 10
-          ).toFixed(2)} */}
-          {dashboardMainData?.grandTotalAmount.toString()}
-        </div>
+        </span>
       </div>
 
-      <div className="overflow-x-auto bg-[#220128] rounded-b-xl scrollbar-hide">
-        <table className="min-w-full text-sm border-collapse">
-          <thead className="bg-[#220128] text-left">
-            <tr>
-              <th className="sticky left-0 z-30 bg-[#220128] px-2 py-2">Sr. No</th>
-              <th className="sticky left-20 z-30 bg-[#220128] px-2 py-2">User Id</th>
-              <th className="px-2 py-2">Referral Id</th>
-              <th className="px-2 py-2">Join Date & Time</th>
-              <th className="px-2 py-2 text-center">Amount</th>
-              <th className="px-2 py-2">Transaction Hash</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan={6} className="text-center py-4 text-gray-300">
-                  Loading...
-                </td>
-              </tr>
-            ) : displayedRewards.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="text-center py-4 text-gray-300">
-                  No rewards found.
-                </td>
-              </tr>
-            ) : (
-              displayedRewards.map((r, i) => (
-                <tr key={i}>
-                  <td className="sticky left-0 z-20 bg-[#220128] px-2 py-2">{i + 1}</td>
-                  <td className="sticky left-20 z-20 bg-[#220128] px-2 py-2 text-yellow-300">
-                    {formattedIds[r.fromUserId] || r.fromUserId}
-                  </td>
-                  <td className="px-2 py-2">
-                    {referrerIds[r.fromUserId] || "-"}
-                  </td>
-                  <td className="px-2 py-2">
-                    {format(new Date(+r.blockTimestamp * 1000), "Pp")}
-                  </td>
-                  <td className="px-2 py-2 text-center">${rewardPerEntry}</td>
-                  <td className="px-2 py-2">
-                    <a
-                      href={`https://polygonscan.com/tx/${r.transactionHash}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-400 underline"
-                    >
-                      {r.transactionHash.slice(0, 6)}...
-                      {r.transactionHash.slice(-6)}
-                    </a>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      <div className="flex items-center gap-2 justify-end">
+        <label className="text-sm font-medium">Show:</label>
+        <select
+          value={entriesToShow}
+          onChange={handleEntriesChange}
+          className="bg-purple-800 border border-white text-white px-2 py-1 rounded text-sm"
+        >
+          <option value="all">All</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="25">25</option>
+        </select>
       </div>
     </div>
+
+    {/* Mobile Summary */}
+    <div className="mt-3 text-sm text-center sm:hidden">
+      <strong>{tab === "generation" ? `Level ${selectedLevel}` : tab}:</strong>{" "}
+      {displayedRewards.length} entries | ${totalAmount.toFixed(2)}
+    </div>
+
+    {/* Totals */}
+    <div className="mt-1 text-xs text-center text-gray-300 sm:text-left">
+      <strong>Total ({tab}):</strong> {allRewards.length} entries | ${totalGlobalAmount.toFixed(2)}
+    </div>
+
+    {tab === "generation" && (
+      <div className="text-sm text-center sm:text-left mt-1 text-green-400">
+        <strong>Generation Total:</strong> ${totalGlobalAmount.toFixed(2)}
+      </div>
+    )}
+    {tab === "upline" && (
+      <div className="text-sm text-center sm:text-left mt-1 text-green-400">
+        <strong>Upline Total:</strong> ${(circleData?.uplineRewards?.length || 0) * 10}
+      </div>
+    )}
+    {tab === "superUpline" && (
+      <div className="text-sm text-center sm:text-left mt-1 text-green-400">
+        <strong>Super Upline Total:</strong> ${(circleData?.superUplineRewards?.length || 0) * 10}
+      </div>
+    )}
+
+    <div className="text-sm text-center sm:text-left mt-2 text-cyan-300">
+      <strong>Grand Total:</strong> ${dashboardMainData?.grandTotalAmount.toString()}
+    </div>
+  </div>
+
+  {/* Table */}
+  <div className="overflow-auto bg-[#220128] rounded-b-xl scrollbar-hide w-full mt-1">
+    <table className="w-full text-xs sm:text-sm border-collapse min-w-[900px]">
+      <thead className="bg-[#220128] text-left">
+        <tr>
+          <th className="sticky left-0 z-30 bg-[#220128] px-2 py-2 w-[60px] min-w-[60px] ">
+            Sr. No
+          </th>
+          <th className="px-2 py-2 min-w-[140px]">User Id</th>
+          <th className="px-2 py-2 min-w-[140px]">Referral Id</th>
+          <th className="px-2 py-2 min-w-[180px]">Join Date & Time</th>
+          <th className="px-2 py-2 text-center min-w-[100px]">Amount</th>
+          <th className="px-2 py-2 min-w-[200px]">Transaction Hash</th>
+        </tr>
+      </thead>
+      <tbody>
+        {loading ? (
+          <tr>
+            <td colSpan={6} className="text-center py-4 text-gray-300">
+              Loading...
+            </td>
+          </tr>
+        ) : displayedRewards.length === 0 ? (
+          <tr>
+            <td colSpan={6} className="text-center py-4 text-gray-300">
+              No rewards found.
+            </td>
+          </tr>
+        ) : (
+          displayedRewards.map((r, i) => (
+            <tr key={i} className="border-t border-purple-700">
+              <td className="sticky left-0 z-20 bg-[#220128] px-2 py-2 w-[60px] min-w-[60px]">
+                {i + 1}
+              </td>
+              <td className="px-2 py-2 text-yellow-300 break-words">
+                {formattedIds?.[r.fromUserId] || r.fromUserId}
+              </td>
+              <td className="px-2 py-2 break-words">{referrerIds?.[r.fromUserId] ?? "-"}</td>
+              <td className="px-2 py-2">
+                {format(new Date(+r.blockTimestamp * 1000), "Pp")}
+              </td>
+              <td className="px-2 py-2 text-center">${rewardPerEntry}</td>
+              <td className="px-2 py-2 break-all">
+                <a
+                  href={`https://polygonscan.com/tx/${r.transactionHash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 underline"
+                >
+                  {r.transactionHash.slice(0, 6)}...{r.transactionHash.slice(-6)}
+                </a>
+              </td>
+            </tr>
+          ))
+        )}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
   );
 }

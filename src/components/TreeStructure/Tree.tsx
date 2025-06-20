@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/store";
 import { getFormattedId } from "@/components/registerUser";
 import { useRegister } from "@/components/usehooks/usehook";
+import { X } from "lucide-react";
 
 const Tree = dynamic(() => import("react-d3-tree"), { ssr: false });
 
@@ -21,12 +22,16 @@ interface OrgChartTreeProps {
 
 export default function Trees({ data }: OrgChartTreeProps) {
   const userId = useSelector((state: RootState) => state.user.userId);
+  const circleData = useSelector((state: RootState) => state.user.circleData);
   const { signer } = useRegister();
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 600, height: 400 });
   const [processedData, setProcessedData] = useState<ExtendedNodeDatum | null>(null);
-  const circleData = useSelector((state: RootState) => state.user.circleData);
+  const [formattedCircleData, setFormattedCircleData] = useState<{
+    uplineRewards: string[];
+    superUplineRewards: string[];
+  }>({ uplineRewards: [], superUplineRewards: [] });
 
   useEffect(() => {
     const updateSize = () => {
@@ -44,6 +49,74 @@ export default function Trees({ data }: OrgChartTreeProps) {
   const nodeSize = isMobile ? { x: 140, y: 100 } : { x: 180, y: 120 };
   const translate = { x: dimensions.width / 2, y: 80 };
 
+  // Step 1: Flatten tree to apply formatted names
+  const flattenTree = (node: ExtendedNodeDatum, nodes: ExtendedNodeDatum[] = []): ExtendedNodeDatum[] => {
+    nodes.push(node);
+    if (node.children) {
+      node.children.forEach((child) => flattenTree(child, nodes));
+    }
+    return nodes;
+  };
+
+  // Step 2: Format tree node IDs
+  useEffect(() => {
+    const processTree = async () => {
+      if (!data || !userId || !signer) return;
+      const clonedData = structuredClone(data);
+      const allNodes = flattenTree(clonedData);
+
+      await Promise.all(
+        allNodes.map(async (node) => {
+          const rawId = node.name;
+          if (rawId && rawId !== "0") {
+            try {
+              const parsedId = parseInt(rawId);
+              const { formattedId } = await getFormattedId(signer, parsedId);
+              node.name = formattedId || rawId.toString();
+            } catch (e) {
+              console.warn(`Failed to format ID ${rawId}`, e);
+              node.name = rawId.toString();
+            }
+          }
+        })
+      );
+
+      setProcessedData(clonedData);
+    };
+
+    processTree();
+  }, [data, userId, signer]);
+
+  // Step 3: Format circleData (upline/superUpline)
+  useEffect(() => {
+    const formatCircleData = async () => {
+      if (!circleData || !signer) return;
+
+      const formatList = async (list: any[]) => {
+        return Promise.all(
+          list.map(async (id) => {
+            try {
+              const parsed = parseInt(id);
+              const { formattedId } = await getFormattedId(signer, parsed);
+              return formattedId || id.toString();
+            } catch {
+              return id.toString();
+            }
+          })
+        );
+      };
+
+      const uplineRewards = await formatList(circleData.uplineRewards || []);
+      console.log("uplintreedata", uplineRewards)
+      const superUplineRewards = await formatList(circleData.superUplineRewards || []);
+
+      setFormattedCircleData({ uplineRewards, superUplineRewards });
+    };
+
+    formatCircleData();
+  }, [circleData, signer]);
+
+  // Step 4: Render nodes with correct color
   const renderNode = useCallback(
     ({
       nodeDatum,
@@ -55,33 +128,26 @@ export default function Trees({ data }: OrgChartTreeProps) {
       const isRoot = hierarchyPointNode.depth === 0;
       const isVacant = nodeDatum.name === "0" || nodeDatum.name === "";
 
-      const formattedName = nodeDatum.name;
-      let bgColor = "#6495ED"; // default
+      let bgColor = "#6495ED"; // default blue
+      const label = isVacant ? "Vacant" : nodeDatum.name;
 
       if (isRoot) {
-        bgColor = "#d7dbdd"; // root - white
+        bgColor = "#d7dbdd"; // root
       } else if (isVacant) {
-        bgColor = "#FF4C4C"; // vacant - red
-      } else if (!isVacant) {
-        const uplineList = circleData?.uplineRewards || [];
-        const superUplineList = circleData?.superUplineRewards || [];
-        const levelList =
-          circleData?.levelData?.flatMap((lvl: any) => lvl.levelData.map((d: any) => d.fromUserId)) || [];
+        bgColor = "#FF4C4C"; // vacant
+      } else {
+        const formattedName = nodeDatum.name;
 
-        // Match priority: upline > superUpline > level
-        if (uplineList.includes(formattedName)) {
-          bgColor = "#6E1A7F"; // upline - purple
-        } else if (superUplineList.includes(formattedName)) {
-          bgColor = "#0020C2"; // superUpline - blue
-        } else if (levelList.includes(formattedName)) {
-          bgColor = "#FFFF00"; // level - yellow
-        } else if (nodeDatum.rewardHighlight) {
-          bgColor = "#facc15"; // reward highlight if no other match
+        if (circleData?.uplineRewards.find(x=>x.fromUserId === nodeDatum.name)) {
+          bgColor = "#FFFF00"; // upline - purple
+        } else if (circleData?.superUplineRewards.find(x=>x.fromUserId === nodeDatum.name)) {
+          bgColor = "#0020C2"; // super-upline - blue
+        } else if (circleData?.levelData.find(x=>x.level === nodeDatum.name)) {
+          bgColor = "#FFFF00"; // reward
         }
       }
 
-      const textColor = "#ffffff";
-      const label = isVacant ? "Vacant" : formattedName;
+      const textColor = "#facc15";
       const radius = isMobile ? 35 : 45;
 
       return (
@@ -100,43 +166,8 @@ export default function Trees({ data }: OrgChartTreeProps) {
         </g>
       );
     },
-    [isMobile, circleData]
+    [isMobile, formattedCircleData]
   );
-
-  const flattenTree = (node: ExtendedNodeDatum, nodes: ExtendedNodeDatum[] = []): ExtendedNodeDatum[] => {
-    nodes.push(node);
-    if (node.children) {
-      node.children.forEach((child) => flattenTree(child, nodes));
-    }
-    return nodes;
-  };
-
-  useEffect(() => {
-    const processTree = async () => {
-      if (!data || !userId || !signer) return;
-      const clonedData = structuredClone(data);
-      const allNodes = flattenTree(clonedData);
-
-      await Promise.all(
-        allNodes.map(async (node) => {
-          const rawId = node.name;
-          if (rawId && rawId !== "0") {
-            try {
-              const parsedId = parseInt(rawId);
-              const { formattedId } = await getFormattedId(signer, parsedId);
-              node.name = formattedId || rawId;
-            } catch (e) {
-              console.warn(`Failed to format ID ${rawId}`, e);
-            }
-          }
-        })
-      );
-
-      setProcessedData(clonedData);
-    };
-
-    processTree();
-  }, [data, userId, signer]);
 
   return (
     <div ref={containerRef} className="w-full h-full">

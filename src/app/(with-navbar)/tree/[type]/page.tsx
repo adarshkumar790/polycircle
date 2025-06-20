@@ -203,24 +203,36 @@ export default function OrgTreePage() {
         </div>
       )}
 
-      <div className="flex gap-2 flex-wrap justify-center mb-6">
-        {childIds.map((id, index) => {
-          const isLast = index === childIds.length - 1;
-          const label = isLast ? `Current (${userId}/${index + 1})` : `${index + 1}`;
-          return (
-            <button
-              key={id}
-              onClick={() => handleChildClick(id)}
-              className={`px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-800 transition ${
-                selectedChildId === id ? "bg-green-700" : ""
-              }`}
-            >
-              {label}
-            </button>
-          );
-        })}
-      </div>
+  <div className="flex gap-2 flex-wrap justify-center mb-6">
+  {/* Show root userId as clickable "Current" label */}
+  {navigationStack.length > 0 && (
+    <button
+      onClick={() => handleChildClick(navigationStack[0])}
+      className={`px-4 py-2 rounded text-white transition ${
+        selectedChildId === navigationStack[0]
+          ? "bg-green-700"
+          : "bg-blue-600 hover:bg-blue-800"
+      }`}
+    >
+      {navigationStack[0]} {/* or label it as "Current" if you want */}
+    </button>
+  )}
 
+  {/* Show childIds as clickable buttons */}
+  {childIds.map((id, index) => (
+    <button
+      key={id}
+      onClick={() => handleChildClick(id)}
+      className={`px-4 py-2 rounded text-white transition ${
+        selectedChildId === id
+          ? "bg-green-700"
+          : "bg-blue-600 hover:bg-blue-800"
+      }`}
+    >
+      {`${navigationStack[0]}/${index + 1}`}
+    </button>
+  ))}
+</div>
       <div className="p-4 rounded shadow w-full h-[500px] bg-gray-900 overflow-auto mb-8">
         {error ? (
           <div className="text-red-400 text-center">{error}</div>
@@ -244,15 +256,15 @@ export default function OrgTreePage() {
           </li>
           <li className="flex items-center">
             <span className="inline-block w-8 h-8 rounded-full bg-yellow-400 mr-2"></span>
-            Direct / Direct Rebirth Reward
+            Upline Id
           </li>
           <li className="flex items-center">
             <span className="inline-block w-8 h-8 rounded-full bg-green-500 mr-2"></span>
-            Rebirth Child
+            Other ID
           </li>
           <li className="flex items-center">
             <span className="inline-block w-8 h-8 rounded-full bg-blue-500 mr-2"></span>
-            Normal Node
+            Super-Upline ID
           </li>
         </ul>
       </div>

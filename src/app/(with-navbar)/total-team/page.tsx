@@ -8,6 +8,7 @@ import { RootState } from "@/Redux/store";
 import { getFormattedId, getUserDetailsById } from "@/components/registerUser";
 import { useRegister } from "@/components/usehooks/usehook";
 import type { RewardDistributed } from "@/GraphQuery/query";
+import Link from "next/link";
 
 type LevelData = {
   [level: number]: RewardDistributed[];
@@ -96,9 +97,19 @@ export default function RewardsPage() {
 
   return (
        <div className="px-2 py-4 max-w-7xl mx-auto font-sans bg-black text-white">
-      <h1 className="text-xl md:text-3xl font-bold mt-4 text-center md:text-left">
-        Total Team
-      </h1>
+      <div className="flex items-center justify-between mt-4">
+        <Link href="/dashboards">
+        <button
+          className="text-white bg-purple-800 hover:bg-purple-700 px-4 py-2 rounded font-medium"
+        >
+          Back
+        </button>
+        </Link>
+        <h1 className="text-xl md:text-3xl font-bold text-center flex-1">
+          Total Team
+        </h1>
+        <div className="w-[80px] md:w-[120px]" />
+      </div>
 
       <div className="bg-purple-900 rounded-t-md px-4 py-4 mt-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
