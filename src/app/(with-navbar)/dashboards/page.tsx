@@ -206,12 +206,12 @@ const PolycircleDashboard = () => {
     { title: "Current Circle", icon: <CurrentCircleIcon />, value: "", link: "/tree/current-circle" },
     { title: "Sponsor Team", icon: <ReferralIcon />, value: `${refrelldata || 0}`, link: "/dashboard/referral" },
     { title: "Total Team", icon: <TeamIcon />, value: `${dashboardMainData?.teamCount.toString() || 0}`, link: "/total-team" },
-    { title: "Sponsorer  Business", icon: <ReferalBusnessIcon />, value: `$${refrellAmount}`, link: "/dashboard/referral-business" },
+    { title: "Sponsorer  Business", icon: <ReferalBusnessIcon />, value: `$${refrellAmount.toFixed(2)}`, link: "/dashboard/referral-business" },
     { title: "Team Business", icon: <TeamBusinessIcon />, value: `$${dashboardMainData?.teamAmount.toFixed(2) || 0}`, link: "/team-bussiness" },
     { title: "Upline Reward", icon: <Image src="/logo/upline.svg" alt="upline reward" width={100} height={100} />, value: `$${dashboardMainData?.uplineAmount.toFixed(2) || 0}`, link: "/dashboard/upline-income" },
     { title: "Super Upline Reward", icon: <Image src="/logo/super-upline.svg" alt="upline reward" width={150} height={150} />, value: `$${dashboardMainData?.superUplineAmount.toFixed(2) || 0}`, link: "/dashboard/super-upline-income" },
-    { title: "Generation Reward", icon: <SupperUpplineIcon />, value: `$${generationAmount || 0}`, link: "/generation-reward" },
-    { title: "Total Reward", icon: <TeamIncomeIcon />, value: `$${dashboardMainData?.grandTotalAmount.toString() || 0}`, link: "/total-reward" },
+    { title: "Generation Reward", icon: <SupperUpplineIcon />, value: `$${generationAmount.toFixed(2) || 0}`, link: "/generation-reward" },
+    { title: "Total Reward", icon: <TeamIncomeIcon />, value: `$${dashboardMainData?.grandTotalAmount.toFixed(2) || 0}`, link: "/total-reward" },
     { title: "TOP-UP", icon: <DirectIncomeIcon />, value: "-", link: "/re-topup" },
   ];
 

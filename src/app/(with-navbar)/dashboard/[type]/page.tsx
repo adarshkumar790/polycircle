@@ -29,7 +29,7 @@ export default function DashboardTablePage() {
     const loadRewards = async () => {
       let data: Reward[] = [];
       let total = 0;
-    
+
       if (type === "referral") {
         data = circleData.levels?.[1] || [];
         total = data.length * 11;
@@ -41,7 +41,7 @@ export default function DashboardTablePage() {
         total = Number(circleData.uplineRewards || 0);
       } else if (type === "super-upline-income") {
         data = circleData.superUplineRewards || [];
-        total = Number(circleData.superUplineRewards ||  0);
+        total = Number(circleData.superUplineRewards || 0);
       } else if (type === "total-team") {
         const visited = new Set<number>();
         const levelUserMap = new Map<number, number[]>();
@@ -64,8 +64,8 @@ export default function DashboardTablePage() {
         const allRewards = circleData.allRewards || [];
         data = Array.isArray(allRewards)
           ? allRewards.filter(
-              (reward: RewardDistributed) => idsAtLevel.includes(Number(reward.fromUserId))
-            )
+            (reward: RewardDistributed) => idsAtLevel.includes(Number(reward.fromUserId))
+          )
           : [];
 
         total = data.reduce((sum, r) => sum + Number(r.amount), 0);
@@ -96,15 +96,16 @@ export default function DashboardTablePage() {
     ...(type === "referral" || type === "referral-business"
       ? { referralId: reward.receiverId }
       : {}),
+    blockTimestamp: reward.blockTimestamp,
     joinDateTime: new Date(Number(reward.blockTimestamp) * 1000).toLocaleString(),
     amount:
       type === "referral"
         ? "$11"
         : type === "referral-business"
-        ? "$50"
-        : type === "upline-income" || type === "super-upline-income"
-        ? "$10"
-        : `$${reward.amount}`,
+          ? "$50"
+          : type === "upline-income" || type === "super-upline-income"
+            ? "$10"
+            : `$${reward.amount}`,
     txn: {
       label: `${reward.transactionHash.slice(0, 8)}...${reward.transactionHash.slice(-8)}`,
       href: `https://testnet.bscscan.com/tx/${reward.transactionHash}`,
@@ -155,7 +156,7 @@ export default function DashboardTablePage() {
           title={config.title}
           circle={config.circle}
           columns={getTableColumns()}
-          data={formattedData.slice(0, entriesCount)}
+          data={[...formattedData.sort((a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp))].slice(0, entriesCount)}
           showLevelSelector={showLevelSelector}
           selectedLevel={selectedLevel}
           onLevelChange={setSelectedLevel}
@@ -163,7 +164,7 @@ export default function DashboardTablePage() {
           entriesCount={entriesCount}
           onEntriesChange={setEntriesCount}
           isCurrentCircle={type === "current-circle"}
-          // totalAmount={totalAmount}
+        // totalAmount={totalAmount}
         />
       </div>
     </div>

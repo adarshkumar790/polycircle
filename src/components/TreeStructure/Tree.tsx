@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/store";
 import { getFormattedId } from "@/components/registerUser";
 import { useRegister } from "@/components/usehooks/usehook";
-import { X } from "lucide-react";
 
 const Tree = dynamic(() => import("react-d3-tree"), { ssr: false });
 
@@ -49,7 +48,6 @@ export default function Trees({ data }: OrgChartTreeProps) {
   const nodeSize = isMobile ? { x: 140, y: 100 } : { x: 180, y: 120 };
   const translate = { x: dimensions.width / 2, y: 80 };
 
-  // Step 1: Flatten tree to apply formatted names
   const flattenTree = (node: ExtendedNodeDatum, nodes: ExtendedNodeDatum[] = []): ExtendedNodeDatum[] => {
     nodes.push(node);
     if (node.children) {
@@ -58,7 +56,6 @@ export default function Trees({ data }: OrgChartTreeProps) {
     return nodes;
   };
 
-  // Step 2: Format tree node IDs
   useEffect(() => {
     const processTree = async () => {
       if (!data || !userId || !signer) return;
@@ -87,7 +84,6 @@ export default function Trees({ data }: OrgChartTreeProps) {
     processTree();
   }, [data, userId, signer]);
 
-  // Step 3: Format circleData (upline/superUpline)
   useEffect(() => {
     const formatCircleData = async () => {
       if (!circleData || !signer) return;
@@ -107,7 +103,6 @@ export default function Trees({ data }: OrgChartTreeProps) {
       };
 
       const uplineRewards = await formatList(circleData.uplineRewards || []);
-      console.log("uplintreedata", uplineRewards)
       const superUplineRewards = await formatList(circleData.superUplineRewards || []);
 
       setFormattedCircleData({ uplineRewards, superUplineRewards });
@@ -116,58 +111,60 @@ export default function Trees({ data }: OrgChartTreeProps) {
     formatCircleData();
   }, [circleData, signer]);
 
-  // Step 4: Render nodes with correct color
   const renderNode = useCallback(
-    ({
-      nodeDatum,
-      hierarchyPointNode,
-    }: {
-      nodeDatum: ExtendedNodeDatum;
-      hierarchyPointNode: { depth: number };
-    }) => {
-      const isRoot = hierarchyPointNode.depth === 0;
-      const isVacant = nodeDatum.name === "0" || nodeDatum.name === "";
+  ({
+    nodeDatum,
+    hierarchyPointNode,
+  }: {
+    nodeDatum: ExtendedNodeDatum;
+    hierarchyPointNode: { depth: number };
+  }) => {
+    const isRoot = hierarchyPointNode.depth === 0;
+    const isVacant = nodeDatum.name === "0" || nodeDatum.name === "";
 
-      let bgColor = "#6495ED"; // default blue
-      const label = isVacant ? "Vacant" : nodeDatum.name;
+    let bgColor = "#6495ED"; // default blue
+    const label = isVacant ? "Vacant" : nodeDatum.name;
 
-      if (isRoot) {
-        bgColor = "#d7dbdd"; // root
-      } else if (isVacant) {
-        bgColor = "#FF4C4C"; // vacant
-      } else {
-        const formattedName = nodeDatum.name;
-
-        if (circleData?.uplineRewards.find(x=>x.fromUserId === nodeDatum.name)) {
-          bgColor = "#FFFF00"; // upline - purple
-        } else if (circleData?.superUplineRewards.find(x=>x.fromUserId === nodeDatum.name)) {
-          bgColor = "#0020C2"; // super-upline - blue
-        } else if (circleData?.levelData.find(x=>x.level === nodeDatum.name)) {
-          bgColor = "#FFFF00"; // reward
-        }
+    if (isRoot) {
+      bgColor = "#d7dbdd"; // root
+    } else if (isVacant) {
+      bgColor = "#fc7a00"; // vacant
+    } else {
+      if (circleData?.uplineRewards.find((x) => x.fromUserId === nodeDatum.name)) {
+        bgColor = "#ffe342"; // upline
+      } else if (circleData?.superUplineRewards.find((x) => x.fromUserId === nodeDatum.name)) {
+        bgColor = "#1071e5"; // super-upline
+      } else if (circleData?.levelData.find((x) => x.level === nodeDatum.name)) {
+        bgColor = "#ffe342"; // level reward
       }
+    }
 
-      const textColor = "#facc15";
-      const radius = isMobile ? 35 : 45;
+    const textColor = "#a855f7"; // bright purple
+    const radius = isMobile ? 35 : 45;
 
-      return (
-        <g>
-          <circle r={radius} fill={bgColor} stroke="#00000050" strokeWidth={4} />
-          <text
-            x={0}
-            y={5}
-            textAnchor="middle"
-            fill={textColor}
-            fontSize={isMobile ? 12 : 14}
-            style={{ pointerEvents: "none" }}
-          >
-            {label}
-          </text>
-        </g>
-      );
-    },
-    [isMobile, formattedCircleData]
-  );
+    return (
+      <g>
+        <circle r={radius} fill={bgColor} stroke="#00000050" strokeWidth={4} />
+        <text
+          x={0}
+          y={5}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fill={textColor}
+          fontSize={isMobile ? 12 : 14}
+          fontWeight="100"
+          style={{
+            pointerEvents: "none",
+            fontFamily: "sans-serif",
+          }}
+        >
+          {label}
+        </text>
+      </g>
+    );
+  },
+  [isMobile, formattedCircleData]
+);
 
   return (
     <div ref={containerRef} className="w-full h-full">

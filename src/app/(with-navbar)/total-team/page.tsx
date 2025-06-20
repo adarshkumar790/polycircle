@@ -217,7 +217,7 @@ export default function RewardsPage() {
       <td className="px-2 py-2 whitespace-nowrap min-w-[180px]">
         {format(new Date(+r.blockTimestamp * 1000), "Pp")}
       </td>
-      <td className="px-2 py-2 text-center min-w-[100px]">${rewardPerEntry}</td>
+      {/* <td className="px-2 py-2 text-center min-w-[100px]">${rewardPerEntry}</td> */}
       <td className="px-2 py-2 break-all min-w-[200px]">
         <a
           href={`https://polygonscan.com/tx/${r.transactionHash}`}
