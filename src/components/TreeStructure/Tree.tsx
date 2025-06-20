@@ -122,24 +122,24 @@ export default function Trees({ data }: OrgChartTreeProps) {
     const isRoot = hierarchyPointNode.depth === 0;
     const isVacant = nodeDatum.name === "0" || nodeDatum.name === "";
 
-    let bgColor = "#6495ED"; // default blue
+    let bgColor = "#6495ED";
     const label = isVacant ? "Vacant" : nodeDatum.name;
 
     if (isRoot) {
-      bgColor = "#d7dbdd"; // root
+      bgColor = "#d7dbdd";
     } else if (isVacant) {
-      bgColor = "#fc7a00"; // vacant
+      bgColor = "#fc7a00"; 
     } else {
       if (circleData?.uplineRewards.find((x) => x.fromUserId === nodeDatum.name)) {
-        bgColor = "#ffe342"; // upline
+        bgColor = "#ffe342"; 
       } else if (circleData?.superUplineRewards.find((x) => x.fromUserId === nodeDatum.name)) {
-        bgColor = "#1071e5"; // super-upline
+        bgColor = "#1071e5"; 
       } else if (circleData?.levelData.find((x) => x.level === nodeDatum.name)) {
-        bgColor = "#ffe342"; // level reward
+        bgColor = "#ffe342";
       }
     }
 
-    const textColor = "#a855f7"; // bright purple
+    const textColor = "#a855f7";
     const radius = isMobile ? 35 : 45;
 
     return (
