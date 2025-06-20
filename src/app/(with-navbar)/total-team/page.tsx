@@ -173,9 +173,9 @@ export default function RewardsPage() {
         <div className="mt-3 text-sm text-center">
           <strong>Level {selectedLevel}:</strong> {displayedRewards.length} entries | ${totalAmount.toFixed(2)}
         </div>
-        <div className="mt-1 text-sm text-center text-gray-300">
+        {/* <div className="mt-1 text-sm text-center text-gray-300">
           <strong>Total (All Levels):</strong> {allRewards.length} entries | ${totalGlobalAmount.toFixed(2)}
-        </div>
+        </div> */}
       </div>
 
       <div className="overflow-x-auto bg-[#220128] rounded-b-xl scrollbar-hide w-full">
@@ -203,31 +203,34 @@ export default function RewardsPage() {
                 </td>
               </tr>
             ) : (
-              displayedRewards.map((r, i) => (
-                <tr key={i} className="border-t border-purple-700">
-                  <td className="sticky left-0 z-20 bg-[#220128] px-2 py-2 w-[80px] min-w-[80px]">{i + 1}</td>
-                  <td className="px-2 py-2 text-yellow-300 w-[150px] min-w-[150px] break-words">
-                    {formattedIds[r.fromUserId] || r.fromUserId}
-                  </td>
-                  <td className="px-2 py-2 break-words min-w-[140px]">
-                    {referrerIds[r.fromUserId] || "-"}
-                  </td>
-                  <td className="px-2 py-2 whitespace-nowrap min-w-[180px]">
-                    {format(new Date(+r.blockTimestamp * 1000), "Pp")}
-                  </td>
-                  <td className="px-2 py-2 break-all min-w-[200px]">
-                    <a
-                      href={`https://polygonscan.com/tx/${r.transactionHash}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-400 underline"
-                    >
-                      {r.transactionHash.slice(0, 6)}...{r.transactionHash.slice(-6)}
-                    </a>
-                  </td>
-                </tr>
-              ))
-            )}
+             displayedRewards
+  .sort((a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp)) // descending order
+  .map((r, i) => (
+    <tr key={i} className="border-t border-purple-700">
+      <td className="sticky left-0 z-20 bg-[#220128] px-2 py-2 w-[80px] min-w-[80px]">{i + 1}</td>
+      <td className="px-2 py-2 text-yellow-300 w-[150px] min-w-[150px] break-words">
+        {formattedIds[r.fromUserId] || r.fromUserId}
+      </td>
+      <td className="px-2 py-2 break-words min-w-[140px]">
+        {referrerIds[r.fromUserId] || "-"}
+      </td>
+      <td className="px-2 py-2 whitespace-nowrap min-w-[180px]">
+        {format(new Date(+r.blockTimestamp * 1000), "Pp")}
+      </td>
+      <td className="px-2 py-2 text-center min-w-[100px]">${rewardPerEntry}</td>
+      <td className="px-2 py-2 break-all min-w-[200px]">
+        <a
+          href={`https://polygonscan.com/tx/${r.transactionHash}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-400 underline"
+        >
+          {r.transactionHash.slice(0, 6)}...{r.transactionHash.slice(-6)}
+        </a>
+      </td>
+    </tr>
+  ))
+)}
           </tbody>
         </table>
       </div>

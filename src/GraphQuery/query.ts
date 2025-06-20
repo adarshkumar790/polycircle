@@ -516,7 +516,6 @@ export async function fetchLevelRewards(
     } 
     super_upline:rewardDistributeds(
       first:1000
-    
       where:{
         rewardType_in:["SUPER_UPLINE","SUPER_UPLINE_REBIRTH"]
       }

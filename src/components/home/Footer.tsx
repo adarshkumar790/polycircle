@@ -16,7 +16,7 @@ export default function Footer() {
             className="object-contain"
           />
           <p className="text-sm text-gray-300">
-            Copyright © 2020. All Rights Reserved
+             © 2025. All Rights Reserved
           </p>
           <p className="text-sm text-purple-500">
             Audited Smart Contract Address:{" "}

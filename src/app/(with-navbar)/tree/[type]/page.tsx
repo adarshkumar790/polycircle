@@ -26,7 +26,7 @@ const tableConfigs: Record<
 > = {
   "current-circle": {
     title: "Current Circle",
-    circle: "Circle 1",
+    circle: "",
     columns: sharedTotalTeam,
     data: [],
   },
@@ -187,8 +187,8 @@ export default function OrgTreePage() {
   }
 
   return (
-    <div className="p-4 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center">
+    <div className="p-3 max-w-6xl mx-auto bg-black">
+      <h1 className="text-3xl font-bold mb-6 text-center text-white">
         Organization Tree
       </h1>
 
@@ -233,7 +233,7 @@ export default function OrgTreePage() {
     </button>
   ))}
 </div>
-      <div className="p-4 rounded shadow w-full h-[500px] bg-gray-900 overflow-auto mb-8">
+      <div className="p-2 rounded shadow w-full h-[500px] bg-gray-900 overflow-auto mb-8">
         {error ? (
           <div className="text-red-400 text-center">{error}</div>
         ) : treeData ? (
@@ -242,7 +242,7 @@ export default function OrgTreePage() {
           <div className="text-white text-center">Loading tree...</div>
         )}
       </div>
-
+{/* 
       <div className="mt-6 p-4 bg-gray-900 rounded-lg text-white text-sm w-full">
         <h2 className="font-semibold mb-2">Name</h2>
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
@@ -267,22 +267,24 @@ export default function OrgTreePage() {
             Super-Upline ID
           </li>
         </ul>
-      </div>
+      </div> */}
 
       <div className="w-full mb-8">
-        <DynamicTable
-          title={config.title}
-          circle={config.circle}
-          columns={config.columns}
-          data={circleData.slice(0, entriesCount)}
-          showLevelSelector={false}
-          selectedLevel={selectedLevel}
-          onLevelChange={setSelectedLevel}
-          showEntriesSelector={true}
-          entriesCount={entriesCount}
-          onEntriesChange={setEntriesCount}
-          isCurrentCircle={true}
-        />
+    <DynamicTable
+  title={config.title}
+  circle={`Circle: ${navigationStack[0]}${selectedChildId ? `/${childIds.indexOf(selectedChildId) + 1}` : ""}`}
+  columns={config.columns}
+  data={circleData.slice(0, entriesCount)}
+  showLevelSelector={false}
+  selectedLevel={selectedLevel}
+  onLevelChange={setSelectedLevel}
+  showEntriesSelector={false}
+  entriesCount={entriesCount}
+  onEntriesChange={setEntriesCount}
+  isCurrentCircle={true}
+/>
+
+
       </div>
     </div>
   );

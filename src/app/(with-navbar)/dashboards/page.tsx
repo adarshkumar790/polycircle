@@ -251,33 +251,52 @@ const PolycircleDashboard = () => {
         </div>
 
 
-        <div className="text-sm flex flex-col mt-4">
-          <div className="flex items-center gap-2">
-            User Id: <span className="text-[#FFFFFF]">{userId}</span>
-            <span className="text-purple-800">|</span>
-            <span className="text-[#FFFFFF]">Status: Active</span>
-          </div>
-          <div className="flex items-center gap-2">
-            Team Size: <span className="text-[#FFFFFF]">{dashboardMainData?.teamCount.toString() || 0}</span>
-            <span className="text-purple-800">|</span>
-            <span className="text-[#FFFFFF]">Team Business: ${dashboardMainData?.teamAmount.toFixed(2) || 0}</span>
-          </div>
-        </div>
+      <div className="text-sm mt-4 flex flex-row gap-4">
+  {/* Left Column: User ID & Status */}
+  <div className="flex flex-col gap-1">
+    <div className="flex items-center gap-2">
+      <span className="text-white font-semibold">User Id:</span>
+      <span className="text-purple-500 font-bold">{userId}</span>
+    </div>
+    <div className="flex items-center gap-2">
+      <span className="text-white font-semibold">Status:</span>
+      <span className="text-green-500 font-bold">Active</span>
+    </div>
+  </div>
+
+  {/* Right Column: Team Size & Team Business */}
+  <div className="flex flex-col gap-1">
+    <div className="flex items-center gap-2">
+      <span className="text-white font-semibold">Team Size:</span>
+      <span className="text-purple-500 font-bold">
+        {dashboardMainData?.teamCount.toString() || 0}
+      </span>
+    </div>
+    <div className="flex items-center gap-2">
+      <span className="text-white font-semibold">Team Business:</span>
+      <span className="text-purple-500 font-bold">
+        ${dashboardMainData?.teamAmount.toFixed(2) || 0}
+      </span>
+    </div>
+  </div>
+</div>
+
+
       </div>
 
       <div className="flex justify-center">
         <div className="max-w-4xl w-full px-4 py-6">
-          <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {dashboardData.map((item, index) => (
               <div key={index} onClick={() => router.push(item.link)} className="cursor-pointer flex flex-col items-center text-center space-y-2">
                 <Card>
                   <CardContent>
-                    <div className="text-xl md:text-3xl w-16 h-16 md:w-24 md:h-24 flex items-center justify-center">
+                    <div className="text-xl md:text-3xl w-24 h-24 md:w-24 md:h-24 flex items-center justify-center">
                       {item.icon}
                     </div>
                   </CardContent>
                 </Card>
-                <div className="text-xs text-gray-100 md:font-bold font-base">{item.title}</div>
+                <div className="text-sm text-gray-100 md:font-bold font-semibold">{item.title}</div>
                 <div className="text-sm font-bold text-purple-400">{item.value}</div>
               </div>
             ))}
