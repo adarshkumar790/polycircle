@@ -151,6 +151,8 @@ export default function RewardsPage() {
   
     }, [userId]);
   
+      const generationAmount = (dashboardMainData?.grandTotalAmount ?? 0) - ((dashboardMainData?.uplineAmount ?? 0) + (dashboardMainData?.superUplineAmount ?? 0));
+
 
   return (
     <div className="p-2 max-w-6xl mx-auto font-sans bg-black text-white">
@@ -241,12 +243,14 @@ export default function RewardsPage() {
 
     {/* Totals */}
     <div className="mt-1 text-xs text-center text-gray-300 sm:text-left">
-      <strong>Total ({tab}):</strong> {allRewards.length} entries | ${totalGlobalAmount.toFixed(2)}
+      <strong>Total ({tab}):</strong> {allRewards.length} entries | ${generationAmount.toFixed(2)}
     </div>
 
     {tab === "generation" && (
       <div className="text-sm text-center sm:text-left mt-1 text-green-400">
-        <strong>Generation Total:</strong> ${totalGlobalAmount.toFixed(2)}
+        {/* <strong>Generation Total:</strong> ${totalGlobalAmount.toFixed(2)}
+         */}
+         {/* {generationAmount} */}
       </div>
     )}
     {tab === "upline" && (
