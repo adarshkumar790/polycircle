@@ -68,7 +68,7 @@ export default function ProgressPage() {
 
         const adjustedAmount = Math.round(numericAmount);
 
-        setAmount(adjustedAmount);
+        setAmount(numericAmount);
         setLocked(Number(lockedAmount.toFixed(6)));
       } catch (err) {
         console.error("Unexpected error:", err);
