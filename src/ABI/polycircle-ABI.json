@@ -275,33 +275,7 @@
     },
     {
         "inputs": [],
-        "name": "TOPUP_DIRECT_REWARD",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
         "name": "TOPUP_INTERVAL",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "TOPUP_LEVEL_REWARD",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -378,25 +352,6 @@
                 "type": "address"
             }
         ],
-        "name": "addressToGrossLockedAmount",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
         "name": "addressToId",
         "outputs": [
             {
@@ -417,44 +372,6 @@
             }
         ],
         "name": "addressToLockedAmount",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "addressToNetEarnings",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "addressToNetLockedAmount",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -573,45 +490,6 @@
                 "internalType": "address",
                 "name": "",
                 "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_userAddress",
-                "type": "address"
-            }
-        ],
-        "name": "getAddressEarningsDetails",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "netEarnings",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "grossEarnings",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "netLockedAmount",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "grossLockedAmount",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "totalEarnings",
-                "type": "uint256"
             }
         ],
         "stateMutability": "view",
@@ -983,6 +861,25 @@
                 "type": "address"
             }
         ],
+        "name": "getTotalGrossEarning",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "userAddress",
+                "type": "address"
+            }
+        ],
         "name": "getTotalTopup",
         "outputs": [
             {
@@ -1053,45 +950,6 @@
                 "internalType": "uint256[]",
                 "name": "childIds",
                 "type": "uint256[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_userId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getUserEarningsDetails",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "netTotalEarning",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "grossEarning",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "netLockedAmount",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "grossLockedAmount",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "totalEarnings",
-                "type": "uint256"
             }
         ],
         "stateMutability": "view",
@@ -1470,26 +1328,6 @@
             {
                 "internalType": "uint256",
                 "name": "mainId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "netTotalEarning",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "grossEarning",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "netLockedAmount",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "grossLockedAmount",
                 "type": "uint256"
             }
         ],

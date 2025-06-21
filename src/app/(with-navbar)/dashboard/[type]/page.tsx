@@ -164,7 +164,8 @@ export default function DashboardTablePage() {
           entriesCount={entriesCount}
           onEntriesChange={setEntriesCount}
           isCurrentCircle={type === "current-circle"}
-        // totalAmount={totalAmount}
+          //@ts-ignore
+        totalAmount={totalAmount}
         />
       </div>
     </div>

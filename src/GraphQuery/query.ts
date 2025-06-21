@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const GRAPH_API_URL = "https://api.studio.thegraph.com/query/112968/graph/v0.0.1";
+const GRAPH_API_URL = "https://api.studio.thegraph.com/query/112968/subgraph/v0.0.2";
 
 const ENDPOINTS = [
-  "https://api.studio.thegraph.com/query/112968/graph/v0.0.1",
+  "https://api.studio.thegraph.com/query/112968/subgraph/v0.0.2",
 ];
 
 

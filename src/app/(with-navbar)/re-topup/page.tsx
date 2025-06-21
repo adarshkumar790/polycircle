@@ -59,14 +59,14 @@ export default function ProgressPage() {
         setUserAddress(userAddress as any);
 
         const [earningRes, lockedRes] = await Promise.all([
-          getTotalEarningWithChildren(signer, userId as any),
+          getTotalEarningWithChildren(signer, userAddress as any),
           getLockTopUp(signer, userAddress),
         ]);
 
         const numericAmount = parseFloat(earningRes.totalEarning || "0");
         const lockedAmount = parseFloat(lockedRes.lockedAmount || "0");
 
-        const adjustedAmount = Math.round(numericAmount * 1.111);
+        const adjustedAmount = Math.round(numericAmount);
 
         setAmount(adjustedAmount);
         setLocked(Number(lockedAmount.toFixed(6)));

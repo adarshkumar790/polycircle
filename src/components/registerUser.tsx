@@ -16,7 +16,8 @@ const T_USDT_ADDRESS = "0xa709b84e21bdd371d7bdadF3F61ee36128693450";
 // const POLYCIRCLE_ADDRESS = "0xCBA4f36fCe5703234136637e95559cD620b26384";
 // const POLYCIRCLE_ADDRESS = "0x4Cf09CFb88e2d0687f79b99C74c277b1c9C671E9";
 // const POLYCIRCLE_ADDRESS = "0x3032E3B268607abf12BF41260c5C76293cf3823f";
-const POLYCIRCLE_ADDRESS = "0xC5d4B2c109804C7BfF6dB53A3879C0B04159C4e3"
+// const POLYCIRCLE_ADDRESS = "0xC5d4B2c109804C7BfF6dB53A3879C0B04159C4e3"
+const POLYCIRCLE_ADDRESS = "0x3c30b15f84FF045eA5Ab4f16b3a6E2d30c67947D"
 
 //for registration, we need to approve the USDT contract to spend our USDT tokens
 // and then call the register function on the PolyCircle contract with the referrer ID
@@ -273,11 +274,11 @@ export async function getFormattedId(
 
 export async function getTotalEarningWithChildren(
   signer: any,
-  userId: number
+  userAddress: number
 ): Promise<{ totalEarning: string; error?: string }> {
   try {
     const contract = new Contract(POLYCIRCLE_ADDRESS, POLYCIRCLE_ABI, signer);
-    const earning = await contract.getTotalEarningWithChildren(userId);
+    const earning = await contract.getTotalGrossEarning(userAddress);
     const totalEarning = formatUnits(earning, 6);
     return { totalEarning };
   } catch (error: any) {
@@ -294,7 +295,7 @@ export async function getLockTopUp(
 ): Promise<{ lockedAmount: string; error?: string }> {
   try {
     const contract = new Contract(POLYCIRCLE_ADDRESS, POLYCIRCLE_ABI, signer);
-    const amount = await contract.getLockTopUp(userAddress);
+    const amount = await contract.getLockedAmount(userAddress);
     const lockedAmount = formatUnits(amount, 6);
     return { lockedAmount };
   } catch (error: any) {
