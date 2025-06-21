@@ -116,7 +116,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           {/* Left: Level Selector or Circle Info */}
           <div className="flex items-center gap-2">
             {isCurrentCircle ? (
-              <span className="whitespace-nowrap">{circle}</span>
+              <span className="whitespace-nowrap">Circle :- {circle}</span>
             ) : showLevelSelector ? (
               <>
                 <span className="whitespace-nowrap">Level:</span>

@@ -371,3 +371,37 @@ export async function getUserDetailsById(
     };
   }
 }
+
+
+export type RewardRecord = {
+  timestamp: string;
+  amount: string;
+  rewardType: string;
+  fromId: string;
+  level: string;
+};
+
+export async function getRewardHistoryByUserId(
+  signer: any,
+  userId: number
+): Promise<{ rewards: RewardRecord[] | null; error?: string }> {
+  try {
+    const contract = new Contract(POLYCIRCLE_ADDRESS, POLYCIRCLE_ABI, signer);
+    const rewardHistory = await contract.getRewardHistory(userId);
+
+    const rewards: RewardRecord[] = rewardHistory.map((reward: any) => ({
+      timestamp: reward.timestamp.toString(),
+      amount: reward.amount.toString(),
+      rewardType: reward.rewardType,
+      fromId: reward.fromId.toString(),
+      level: reward.level.toString(),
+    }));
+
+    return { rewards };
+  } catch (error: any) {
+    return {
+      rewards: null,
+      error: error.reason || error.message || "Failed to fetch reward history.",
+    };
+  }
+}

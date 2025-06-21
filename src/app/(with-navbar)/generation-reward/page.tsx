@@ -244,8 +244,7 @@ export default function RewardsPage() {
         {formattedIds[r.fromUserId] || r.fromUserId}
       </td>
       <td className="px-2 py-2 break-words min-w-[140px]">
-        {referrerIds[r.fromUserId] || "-"}
-      </td>
+{referrerIds[r.fromUserId] || "-"}      </td>
       <td className="px-2 py-2 whitespace-nowrap min-w-[180px]">
         {format(new Date(+r.blockTimestamp * 1000), "Pp")}
       </td>

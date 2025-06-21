@@ -122,7 +122,7 @@ export default function ProgressPage() {
             </p>
             <p>
               <span className="text-white">Total Reward: </span>$
-              {dashboardMainData?.grandTotalAmount.toString() || 0}
+              {dashboardMainData?.grandTotalAmount.toFixed(2) || 0}
             </p>
           </div>
         </div>

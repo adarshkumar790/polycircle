@@ -12,6 +12,7 @@ import {
 } from "@/GraphQuery/query";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/store";
+import Link from "next/link";
 
 const sharedTotalTeam = [
   { label: "User ID", accessor: "userId" },
@@ -252,6 +253,7 @@ export default function OrgTreePage() {
           <div className="text-white text-center">Loading tree...</div>
         )}
       </div>
+      <Link href="/trees">Tree</Link>
 
       <div className="w-full mb-8">
         <DynamicTable
