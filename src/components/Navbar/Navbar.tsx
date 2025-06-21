@@ -118,13 +118,13 @@ const Navbar: React.FC = () => {
               <span className="font-semibold">Dashboard</span>
             </a>
 
-            <a
+            {/* <a
               href="/profile"
               className="flex items-center space-x-2 text-white hover:text-purple-400 transition"
             >
               <ProfileIcon />
               <span className="font-semibold">Profile</span>
-            </a>
+            </a> */}
             <div>
               <button
                 onClick={toggleMyTeam}

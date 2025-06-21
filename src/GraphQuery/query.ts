@@ -1,19 +1,12 @@
 import axios from 'axios';
 
-// const GRAPH_API_URL = "https://api.studio.thegraph.com/query/112968/graph/version/latest";
+const GRAPH_API_URL = "https://api.studio.thegraph.com/query/112968/graph/v0.0.1";
 
 const ENDPOINTS = [
-  "https://api.studio.thegraph.com/query/112968/graph/version/latest",
-  "https://api.studio.thegraph.com/query/112968/graph/version/latest",
-  "https://api.studio.thegraph.com/query/112968/graph/version/backup2",
-  "https://api.studio.thegraph.com/query/112968/graph/version/backup3",
-  "https://api.studio.thegraph.com/query/112968/graph/version/backup4",
+  "https://api.studio.thegraph.com/query/112968/graph/v0.0.1",
 ];
 
-// This variable will be used throughout your app
-export const GRAPH_API_URL = ENDPOINTS[0];
 
-// Smart fetch wrapper that rotates on failure
 export async function fetchFromGraph(query: string, variables?: any): Promise<any> {
   for (let i = 0; i < ENDPOINTS.length; i++) {
     try {
@@ -541,7 +534,7 @@ export async function fetchLevelRewards(
 
   const res = await fetch(GRAPH_API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json","Authorization":"Bearer 4b8b1a7a29929a11b369940943430a8c" },
     body: JSON.stringify({ query, variables: { receiverIds, mainId } }),
   });
 
