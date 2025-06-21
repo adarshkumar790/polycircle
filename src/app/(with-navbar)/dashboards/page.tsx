@@ -197,8 +197,8 @@ const PolycircleDashboard = () => {
 
   const totalRefrell = (dashboardMainData?.referalTeam ?? 0) * 50 
   const generationAmount = (dashboardMainData?.grandTotalAmount ?? 0) - ((dashboardMainData?.uplineAmount ?? 0) + (dashboardMainData?.superUplineAmount ?? 0));
-  const refrelldata = (circleData?.levels?.[0]?.length ?? 0);
-    const refrellAmount = (circleData?.levels?.[0]?.length ?? 0) * 50;
+  const refrelldata = (circleData?.levels?.[1]?.length ?? 0);
+    const refrellAmount = (circleData?.levels?.[1]?.length ?? 0) * 50;
 
 
 

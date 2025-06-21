@@ -169,6 +169,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               <span className="text-sm">entries</span>
             </div>
           )}
+          <div>Total Amount :- {totalAmount.toFixed(2)}</div>
         </div>
       </div>
 

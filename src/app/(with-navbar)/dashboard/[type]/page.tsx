@@ -31,10 +31,10 @@ export default function DashboardTablePage() {
       let total = 0;
 
       if (type === "referral") {
-        data = circleData.levels?.[0] || [];
+        data = circleData.levels?.[1] || [];
         total = data.length * 11;
       } else if (type === "referral-business") {
-        data = circleData.levels?.[0] || [];
+        data = circleData.levels?.[1] || [];
         total = data.length * 50;
       } else if (type === "upline-income") {
         data = circleData.uplineRewards || [];
