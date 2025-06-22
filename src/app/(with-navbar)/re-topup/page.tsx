@@ -208,7 +208,7 @@ export default function ProgressPage() {
           <div className="text-center mt-8">
             <p className="text-gray-400 text-sm">Locked Top-up</p>
             <p className="text-xl sm:text-2xl font-bold text-purple-300">
-              {locked?.toFixed(2) ?? "0.00"} USDT
+              ${locked?.toFixed(2) ?? "0.00"}
             </p>
           </div>
         )}

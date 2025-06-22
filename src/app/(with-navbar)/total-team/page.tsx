@@ -151,14 +151,14 @@ export default function RewardsPage() {
           </div>
         </div>
 
-        <div className="mt-3 text-sm text-center">
+        {/* <div className="mt-3 text-sm text-center">
           <strong>Level {selectedLevel}:</strong> {filteredRewards.length} entries | ${totalAmount.toFixed(2)}
         </div>
 
         <div className="mt-1 text-xs text-center text-gray-300">
           <strong>Total (All Levels):</strong> {allRewards.length} entries | ${totalGlobalAmount.toFixed(2)}
-        </div>
-      </div>
+        </div> */}
+      </div> 
 
       <div className="overflow-x-auto bg-[#220128] rounded-b-xl scrollbar-hide w-full">
         <table className="w-full text-sm border-collapse min-w-[900px]">
@@ -168,7 +168,7 @@ export default function RewardsPage() {
               <th className="px-2 py-2 w-[150px] min-w-[150px]">User Id</th>
               <th className="px-2 py-2 min-w-[140px]">Sponsor ID</th>
               <th className="px-2 py-2 min-w-[180px]">Join Date & Time</th>
-              <th className="px-2 py-2 text-center min-w-[100px]">Amount</th>
+              {/* <th className="px-2 py-2 text-center min-w-[100px]">Amount</th> */}
               <th className="px-2 py-2 min-w-[200px]">Transaction Hash</th>
             </tr>
           </thead>
@@ -200,7 +200,7 @@ export default function RewardsPage() {
                     <td className="px-2 py-2 whitespace-nowrap">
                       {format(new Date(+r.blockTimestamp * 1000), "Pp")}
                     </td>
-                    <td className="px-2 py-2 text-center">${FIXED_REWARD}</td>
+                    {/* <td className="px-2 py-2 text-center">${FIXED_REWARD}</td> */}
                     <td className="px-2 py-2 break-all">
                       <a
                         href={`https://polygonscan.com/tx/${r.transactionHash}`}
