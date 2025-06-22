@@ -9,7 +9,7 @@ import {
   getFormattedId,
 } from "@/components/registerUser";
 import { fetchAllChildRebirths } from "@/GraphQuery/query";
-import Trees, { ExtendedNodeDatum } from "@/components/TreeStructure/Tree";
+import Trees, { ExtendedNodeDatum }  from "@/components/Trees"
 import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/store";
 

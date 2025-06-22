@@ -1,4 +1,3 @@
-// Tree.tsx
 "use client";
 
 import dynamic from "next/dynamic";
@@ -12,6 +11,7 @@ const Tree = dynamic(() => import("react-d3-tree"), { ssr: false });
 export interface ExtendedNodeDatum extends RawNodeDatum {
   children?: ExtendedNodeDatum[];
   rewardType?: string;
+  bgColor?: string;
 }
 
 interface OrgChartTreeProps {
@@ -48,14 +48,36 @@ export default function Trees({ data }: OrgChartTreeProps) {
     return nodes;
   };
 
+  const getColorFromRewardType = (type?: string): string => {
+    switch (type) {
+      case "DIRECT":
+        return "#c084fc"; // Tailwind: bg-purple-400
+      case "UPLINE":
+        return "#60a5fa"; // Tailwind: bg-blue-400
+      case "SUPER_UPLINE":
+        return "#facc15"; // Tailwind: bg-yellow-400
+      case "UPLINE_REBIRTH":
+      case "SUPER_UPLINE_REBIRTH":
+      case "DIRECT_REBIRTH":
+        return "#4ade80"; // Tailwind: bg-green-400
+      default:
+        return "#e5e7eb"; // Tailwind: bg-gray-200
+    }
+  };
+
   useEffect(() => {
     const processTree = async () => {
       if (!data || !signer) return;
       const clonedData = structuredClone(data);
       const allNodes = flattenTree(clonedData);
 
+      // Assign color and formatted ID
       await Promise.all(
         allNodes.map(async (node) => {
+          // assign color based on rewardType
+          node.bgColor = getColorFromRewardType(node.rewardType);
+
+          // format name
           const rawId = node.name;
           if (rawId && rawId !== "0") {
             try {
@@ -77,48 +99,34 @@ export default function Trees({ data }: OrgChartTreeProps) {
 
   const renderNode = useCallback(
     ({ nodeDatum }: { nodeDatum: ExtendedNodeDatum }) => {
-      let bgColor = "#e9d5ff"; // fallback lilac
+      // default color from rewardType
+      let bgColor = nodeDatum.bgColor || "#e5e7eb";
 
+      // check for empty node
+      const isEmptyNode =
+        !nodeDatum.name || nodeDatum.name === "0" || nodeDatum.name.trim() === "";
 
-switch (nodeDatum.rewardType) {
-  case "DIRECT":
-  case "DIRECT_REBIRTH":
-    bgColor = "#eab308"; // Yellow - Tailwind: bg-yellow-500
-    break;
-  case "UPLINE":
-  case "UPLINE_REBIRTH":
-    bgColor = "#60a5fa"; // Blue - Tailwind: bg-blue-400
-    break;
-  case "SUPER_UPLINE":
-  case "SUPER_UPLINE_REBIRTH":
-    bgColor = "#a78bfa"; // Purple - Tailwind: bg-purple-400
-    break;
-  default:
-    bgColor = "#e9d5ff"; // Light Purple (Fallback) - Tailwind: bg-purple-200
-    break;
-}
+      if (isEmptyNode) {
+        bgColor = "#f87171"; // Tailwind: bg-red-400
+      }
 
-
-      const radius = isMobile ? 35 : 45;
       return (
         <g>
-          <circle r={radius} fill={bgColor} stroke="#00000050" strokeWidth={4} />
+          <circle r={30} fill={bgColor} stroke="#000" strokeWidth={1} />
           <text
+            fill="#000"
+            stroke="none"
             x={0}
             y={5}
             textAnchor="middle"
-            dominantBaseline="middle"
-            fill="#4c1d95"
-            fontSize={isMobile ? 12 : 14}
-            fontWeight="bold"
-            style={{ pointerEvents: "none", fontFamily: "sans-serif" }}
+            fontSize="12"
           >
             {nodeDatum.name}
           </text>
         </g>
       );
     },
-    [isMobile]
+    []
   );
 
   return (
