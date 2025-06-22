@@ -78,23 +78,24 @@ export default function Trees({ data }: OrgChartTreeProps) {
   const renderNode = useCallback(
     ({ nodeDatum }: { nodeDatum: ExtendedNodeDatum }) => {
       let bgColor = "#e9d5ff"; // fallback lilac
-      switch (nodeDatum.rewardType) {
-        case "DIRECT":
-          bgColor = "#facc15"; // yellow
-          break;
-        case "UPLINE":
-          bgColor = "#60a5fa"; // blue
-          break;
-        case "SUPER_UPLINE":
-          bgColor = "#a78bfa"; // purple
-          break;
-        case "SUPER_UPLINE_REBIRTH":
-        case "UPLINE_REBIRTH":
-          bgColor = "#4ade80"; // green
-          break;
-        default:
-          bgColor = "#e9d5ff";
-      }
+
+switch (nodeDatum.rewardType) {
+  case "DIRECT":
+  case "DIRECT_REBIRTH":
+    bgColor = "#facc15"; // yellow
+    break;
+  case "UPLINE":
+  case "UPLINE_REBIRTH":
+    bgColor = "#60a5fa"; // blue
+    break;
+  case "SUPER_UPLINE":
+  case "SUPER_UPLINE_REBIRTH":
+    bgColor = "#a78bfa"; // purple
+    break;
+  default:
+    bgColor = "#e9d5ff"; // fallback
+}
+
 
       const radius = isMobile ? 35 : 45;
       return (

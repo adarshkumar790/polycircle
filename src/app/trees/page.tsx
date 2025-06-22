@@ -1,4 +1,3 @@
-// TreeFilteredRewardHistory.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -17,12 +16,16 @@ import { RootState } from "@/Redux/store";
 export default function TreeFilteredRewardHistory() {
   const { signer } = useRegister();
   const userId = useSelector((state: RootState) => state.user.userId);
+  const circleData = useSelector((state: RootState) => state.user.circleData);
+
+  console.log("cirlcdm", circleData?.levelData[1].levelData[1])
 
   const [activeId, setActiveId] = useState<number>(userId as any);
   const [childIds, setChildIds] = useState<number[]>([]);
   const [treeJson, setTreeJson] = useState<ExtendedNodeDatum | null>(null);
   const [rewards, setRewards] = useState<RewardRecord[]>([]);
   const [formattedFromIds, setFormattedFromIds] = useState<Map<string, string>>(new Map());
+  const [txnMap, setTxnMap] = useState<Map<string, string>>(new Map());
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -79,6 +82,7 @@ export default function TreeFilteredRewardHistory() {
       const rewardsList = Array.from(latestByFromId.values());
       setRewards(rewardsList);
 
+      // Format From IDs
       const formattedMap = new Map<string, string>();
       await Promise.all(
         rewardsList.map(async (r) => {
@@ -91,6 +95,19 @@ export default function TreeFilteredRewardHistory() {
         })
       );
       setFormattedFromIds(formattedMap);
+
+      // Match transaction hash from circleData.level
+      const txMap = new Map<string, string>();
+      if (circleData?.levelData[1] && Array.isArray(circleData.levelData[1])) {
+        for (const entry of circleData.levelData[1]) {
+          if (entry?.fromId && entry?.
+transactionHash) {
+            txMap.set(String(entry.fromId), entry.
+transactionHash);
+          }
+        }
+      }
+      setTxnMap(txMap);
 
       const toNode = (id: number): ExtendedNodeDatum => {
         const reward = rewardsList.find((r) => Number(r.fromId) === id);
@@ -124,60 +141,74 @@ export default function TreeFilteredRewardHistory() {
     };
 
     fetchData();
-  }, [signer, activeId]);
+  }, [signer, activeId, circleData]);
 
   const RewardTable = ({ rewards }: { rewards: RewardRecord[] }) => {
-  const getRowColor = (type: string) => {
-    switch (type) {
-      case "DIRECT":
-        return "bg-yellow-200 text-black";
-      case "UPLINE":
-        return "bg-blue-200 text-black";
-      case "SUPER_UPLINE":
-        return "bg-purple-200 text-black";
-      case "SUPER_UPLINE_REBIRTH":
-      case "UPLINE_REBIRTH":
-        return "bg-green-200 text-black";
-      default:
-        return "bg-gray-100 text-black";
-    }
+    const getRowColor = (type: string) => {
+      switch (type) {
+        case "DIRECT":
+        case "DIRECT_REBIRTH":
+          return "bg-yellow-500 text-black";
+        case "UPLINE":
+        case "UPLINE_REBIRTH":
+          return "bg-blue-400 text-black";
+        case "SUPER_UPLINE":
+        case "SUPER_UPLINE_REBIRTH":
+          return "bg-green-400 text-black";
+        default:
+          return "bg-gray-200 text-black";
+      }
+    };
+
+    return (
+      <div className="overflow-x-auto mt-6">
+        <table className="min-w-[800px] w-full text-sm text-left rounded-lg">
+          <thead className="bg-purple-900 text-white">
+            <tr>
+              <th className="px-4 py-2 sticky left-0 z-10 bg-purple-900">Sr No</th>
+              <th className="px-4 py-2">From ID</th>
+              <th className="px-4 py-2">Amount</th>
+              <th className="px-4 py-2">Reward Type</th>
+              <th className="px-4 py-2">Level</th>
+              <th className="px-4 py-2">Date</th>
+              <th className="px-4 py-2">Txn Hash</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rewards.map((r, i) => (
+              <tr key={i} className={`${getRowColor(r.rewardType)} border-b`}>
+                <td className="px-4 py-2 sticky left-0 z-10 bg-inherit">{i + 1}</td>
+                <td className="px-4 py-2">{formattedFromIds.get(r.fromId) || r.fromId}</td>
+                <td className="px-4 py-2">10$</td>
+                <td className="px-4 py-2">{r.rewardType}</td>
+                <td className="px-4 py-2">{r.level}</td>
+                <td className="px-4 py-2">{new Date(Number(r.timestamp) * 1000).toLocaleString()}</td>
+                <td className="px-4 py-2">
+                  {txnMap.get(r.fromId) ? (
+                    <a
+                      href={`https://bscscan.com/tx/${txnMap.get(r.fromId)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-800 underline"
+                    >
+                      View Txn
+                    </a>
+                  ) : (
+                    "-"
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
   };
 
   return (
-    <div className="overflow-x-auto mt-6">
-      <table className="w-full text-sm text-left rounded-lg overflow-hidden min-w-[700px]">
-        <thead className="bg-purple-900 text-black">
-          <tr>
-            <th className="px-4 py-2 border border-purple-300">Sr No</th>
-            <th className="px-4 py-2 border border-purple-300">From ID</th>
-            <th className="px-4 py-2 border border-purple-300">Amount</th>
-            <th className="px-4 py-2 border border-purple-300">Reward Type</th>
-            <th className="px-4 py-2 border border-purple-300">Level</th>
-            <th className="px-4 py-2 border border-purple-300">Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rewards.map((r, i) => (
-            <tr key={i} className={getRowColor(r.rewardType)}>
-              <td className="px-4 py-2">{i + 1}</td>
-              <td className="px-4 py-2">{formattedFromIds.get(r.fromId) || r.fromId}</td>
-              <td className="px-4 py-2">10$</td>
-              <td className="px-4 py-2">{r.rewardType}</td>
-              <td className="px-4 py-2">{r.level}</td>
-              <td className="px-4 py-2">{new Date(Number(r.timestamp) * 1000).toLocaleString()}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};
+    <div className="bg-gray-900 text-white p-4 sm:p-6 rounded-md shadow-md max-w-6xl mx-auto mt-10">
+      <h2 className="text-2xl font-bold mb-6 text-center text-teal-300">Tree</h2>
 
-  return (
-    <div className="bg-gray-900 text-white p-6 rounded-md shadow-md max-w-6xl mx-auto mt-10">
-      <h2 className="text-2xl font-bold mb-6 text-center text-teal-300">
-        Reward History Viewer
-      </h2>
       <div className="flex flex-wrap gap-2 justify-center mb-6">
         <button
           onClick={() => setActiveId(userId as any)}
@@ -197,8 +228,12 @@ export default function TreeFilteredRewardHistory() {
         ))}
       </div>
 
-      <div className="h-[600px] w-full mb-4">
-        {treeJson ? <Trees data={treeJson} /> : <div className="text-center text-yellow-300">Loading tree...</div>}
+      <div className="h-[400px] sm:h-[600px] w-full mb-6">
+        {treeJson ? (
+          <Trees data={treeJson} />
+        ) : (
+          <div className="text-center text-yellow-300">Loading tree...</div>
+        )}
       </div>
 
       {error ? (
@@ -206,7 +241,15 @@ export default function TreeFilteredRewardHistory() {
       ) : rewards.length === 0 ? (
         <div className="text-yellow-400 text-center">No reward records found.</div>
       ) : (
-        <RewardTable rewards={rewards} />
+        <div>
+          <h3 className="text-lg font-semibold text-center text-teal-400 mb-2">
+            Circle:{" "}
+            {activeId === Number(userId)
+              ? `${userId}`
+              : `${userId}/${childIds.indexOf(activeId) + 1}`}
+          </h3>
+          <RewardTable rewards={rewards} />
+        </div>
       )}
     </div>
   );
