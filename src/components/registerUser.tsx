@@ -380,6 +380,8 @@ export type RewardRecord = {
   rewardType: string;
   fromId: string;
   level: string;
+  transactionHash:string;
+  refrellId:string
 };
 
 export async function getRewardHistoryByUserId(

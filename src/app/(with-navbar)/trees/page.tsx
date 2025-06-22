@@ -18,14 +18,11 @@ export default function TreeFilteredRewardHistory() {
   const userId = useSelector((state: RootState) => state.user.userId);
   const circleData = useSelector((state: RootState) => state.user.circleData);
 
-  console.log("cirlcdm", circleData?.levelData[1].levelData[1])
-
   const [activeId, setActiveId] = useState<number>(userId as any);
   const [childIds, setChildIds] = useState<number[]>([]);
   const [treeJson, setTreeJson] = useState<ExtendedNodeDatum | null>(null);
   const [rewards, setRewards] = useState<RewardRecord[]>([]);
   const [formattedFromIds, setFormattedFromIds] = useState<Map<string, string>>(new Map());
-  const [txnMap, setTxnMap] = useState<Map<string, string>>(new Map());
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -44,9 +41,9 @@ export default function TreeFilteredRewardHistory() {
   }, [userId]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!signer) return;
+    if (!signer || activeId === null || activeId === undefined) return;
 
+    const fetchData = async () => {
       const tree = await getUserFullTree(signer, activeId);
       if (tree.error) {
         setError(tree.error);
@@ -63,13 +60,13 @@ export default function TreeFilteredRewardHistory() {
         tree.rightRightId,
       ].filter((id) => id && id !== 0);
 
-      const { rewards, error: rewardError } = await getRewardHistoryByUserId(signer, activeId);
+      const { rewards: rawRewards, error: rewardError } = await getRewardHistoryByUserId(signer, activeId);
       if (rewardError) {
         setError(rewardError);
         return;
       }
 
-      const filtered = (rewards || []).filter((r) => ids.includes(Number(r.fromId)));
+      const filtered = (rawRewards || []).filter((r) => ids.includes(Number(r.fromId)));
 
       const latestByFromId = new Map<string, RewardRecord>();
       for (const reward of filtered) {
@@ -80,12 +77,26 @@ export default function TreeFilteredRewardHistory() {
       }
 
       const rewardsList = Array.from(latestByFromId.values());
-      setRewards(rewardsList);
 
-      // Format From IDs
+      const levelRewards = circleData?.levelData.flatMap((x) => x.levelData) || [];
+const uplineRewards = circleData?.uplineRewards || [];
+const superUplineRewards = circleData?.superUplineRewards || [];
+
+const allRewards = [...levelRewards, ...uplineRewards, ...superUplineRewards];
+
+const finalData = rewardsList.map((x) => {
+  const tx = allRewards.find((z: any) => z.fromUserId === x.fromId)?.transactionHash || "";
+  return {
+    ...x,
+    transactionHash: tx,
+  };
+});
+
+      setRewards(finalData);
+
       const formattedMap = new Map<string, string>();
       await Promise.all(
-        rewardsList.map(async (r) => {
+        finalData.map(async (r) => {
           try {
             const { formattedId } = await getFormattedId(signer, Number(r.fromId));
             formattedMap.set(r.fromId, formattedId);
@@ -96,21 +107,8 @@ export default function TreeFilteredRewardHistory() {
       );
       setFormattedFromIds(formattedMap);
 
-      // Match transaction hash from circleData.level
-      const txMap = new Map<string, string>();
-      if (circleData?.levelData[1] && Array.isArray(circleData.levelData[1])) {
-        for (const entry of circleData.levelData[1]) {
-          if (entry?.fromId && entry?.
-transactionHash) {
-            txMap.set(String(entry.fromId), entry.
-transactionHash);
-          }
-        }
-      }
-      setTxnMap(txMap);
-
       const toNode = (id: number): ExtendedNodeDatum => {
-        const reward = rewardsList.find((r) => Number(r.fromId) === id);
+        const reward = finalData.find((r) => Number(r.fromId) === id);
         return {
           name: id.toString(),
           //@ts-ignore
@@ -125,13 +123,13 @@ transactionHash);
           {
             name: tree.leftId.toString(),
             //@ts-ignore
-            rewardType: rewardsList.find((r) => Number(r.fromId) === tree.leftId)?.rewardType || "",
+            rewardType: finalData.find((r) => Number(r.fromId) === tree.leftId)?.rewardType || "",
             children: [toNode(tree.leftLeftId), toNode(tree.leftRightId)],
           },
           {
             name: tree.rightId.toString(),
             //@ts-ignore
-            rewardType: rewardsList.find((r) => Number(r.fromId) === tree.rightId)?.rewardType || "",
+            rewardType: finalData.find((r) => Number(r.fromId) === tree.rightId)?.rewardType || "",
             children: [toNode(tree.rightLeftId), toNode(tree.rightRightId)],
           },
         ],
@@ -146,22 +144,19 @@ transactionHash);
   const RewardTable = ({ rewards }: { rewards: RewardRecord[] }) => {
     const getRowColor = (type: string) => {
       switch (type) {
-        case "DIRECT":
-        case "DIRECT_REBIRTH":
-          return "bg-yellow-500 text-black";
-        case "UPLINE":
+        case "DIRECT": return "bg-purple-400";
+        case "UPLINE": return "bg-blue-400 text-black";
+        case "SUPER_UPLINE": return "bg-yellow-400";
         case "UPLINE_REBIRTH":
-          return "bg-blue-400 text-black";
-        case "SUPER_UPLINE":
         case "SUPER_UPLINE_REBIRTH":
-          return "bg-green-400 text-black";
-        default:
-          return "bg-gray-200 text-black";
+
+        case "DIRECT_REBIRTH": return "bg-green-400 text-black";
+        default: return "bg-gray-200 text-black";
       }
     };
 
     return (
-      <div className="overflow-x-auto mt-6">
+      <div className="overflow-x-auto mt-6 bg-black">
         <table className="min-w-[800px] w-full text-sm text-left rounded-lg">
           <thead className="bg-purple-900 text-white">
             <tr>
@@ -183,19 +178,12 @@ transactionHash);
                 <td className="px-4 py-2">{r.rewardType}</td>
                 <td className="px-4 py-2">{r.level}</td>
                 <td className="px-4 py-2">{new Date(Number(r.timestamp) * 1000).toLocaleString()}</td>
-                <td className="px-4 py-2">
-                  {txnMap.get(r.fromId) ? (
-                    <a
-                      href={`https://bscscan.com/tx/${txnMap.get(r.fromId)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-800 underline"
-                    >
-                      View Txn
+                <td className="px-2 py-2 break-all min-w-[200px]">
+                  {r?.transactionHash ? (
+                    <a href={`https://testnet.bscscan.com/tx/${r.transactionHash}`} target="_blank" rel="noopener noreferrer" className="text-white underline">
+                      {r.transactionHash.slice(0, 6)}...{r.transactionHash.slice(-6)}
                     </a>
-                  ) : (
-                    "-"
-                  )}
+                  ) : "-"}
                 </td>
               </tr>
             ))}
@@ -229,11 +217,7 @@ transactionHash);
       </div>
 
       <div className="h-[400px] sm:h-[600px] w-full mb-6">
-        {treeJson ? (
-          <Trees data={treeJson} />
-        ) : (
-          <div className="text-center text-yellow-300">Loading tree...</div>
-        )}
+        {treeJson ? <Trees data={treeJson} /> : <div className="text-center text-yellow-300">Loading tree...</div>}
       </div>
 
       {error ? (
@@ -243,10 +227,7 @@ transactionHash);
       ) : (
         <div>
           <h3 className="text-lg font-semibold text-center text-teal-400 mb-2">
-            Circle:{" "}
-            {activeId === Number(userId)
-              ? `${userId}`
-              : `${userId}/${childIds.indexOf(activeId) + 1}`}
+            Circle: {activeId === Number(userId) ? `${userId}` : `${userId}/${childIds.indexOf(activeId) + 1}`}
           </h3>
           <RewardTable rewards={rewards} />
         </div>

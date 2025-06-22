@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/store";
-import { getFormattedId, getUserDetailsById } from "@/components/registerUser";
+import { getFormattedId, getUserDetails } from "@/components/registerUser";
 import { useRegister } from "@/components/usehooks/usehook";
 import type { RewardDistributed } from "@/GraphQuery/query";
 import Link from "next/link";
@@ -94,19 +94,18 @@ export default function RewardsPage() {
         uniqueFromIds.map(async (id) => {
           try {
             const userId = parseInt(id);
-            const [{ formattedId }, { user }] = await Promise.all([
+            const [formattedUser, userDetails] = await Promise.all([
               getFormattedId(signer, userId),
-              getUserDetailsById(signer, userId),
+              getUserDetails(signer, userId),
             ]);
 
-            formattedMap[id] = formattedId || id;
+            formattedMap[id] = formattedUser.formattedId || id;
 
-            if (user?.referrerId) {
-              const { formattedId: refFormatted } = await getFormattedId(
-                signer,
-                parseInt(user.referrerId)
-              );
-              referrerMap[id] = refFormatted || user.referrerId;
+            if (userDetails.referrerId && userDetails.referrerId > 0) {
+              const refFormatted = await getFormattedId(signer, userDetails.referrerId);
+              referrerMap[id] = refFormatted.formattedId || String(userDetails.referrerId);
+            } else {
+              referrerMap[id] = "-";
             }
           } catch {
             formattedMap[id] = id;
@@ -149,7 +148,6 @@ export default function RewardsPage() {
 
       <div className="bg-purple-900 rounded-t-md px-4 py-4 mt-4">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
-          {/* Left: Level Selector */}
           <div className="flex items-center gap-2">
             <label className="text-sm font-medium whitespace-nowrap">Level</label>
             <select
@@ -168,7 +166,6 @@ export default function RewardsPage() {
             </select>
           </div>
 
-          {/* Center: Search Bar */}
           <div className="w-full lg:w-[280px] text-center">
             <input
               type="text"
@@ -179,7 +176,6 @@ export default function RewardsPage() {
             />
           </div>
 
-          {/* Right: Show Entries */}
           <div className="flex items-center gap-2">
             <label className="text-sm font-medium whitespace-nowrap">Show</label>
             <select
@@ -206,7 +202,6 @@ export default function RewardsPage() {
         </div>
       </div>
 
-      {/* Table Section */}
       <div className="overflow-x-auto bg-[#220128] rounded-b-xl scrollbar-hide w-full">
         <table className="w-full text-sm border-collapse min-w-[900px]">
           <thead className="bg-[#220128] text-left">
@@ -235,33 +230,38 @@ export default function RewardsPage() {
                 </td>
               </tr>
             ) : (
-             displayedRewards
-  .sort((a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp)) // descending order
-  .map((r, i) => (
-    <tr key={i} className="border-t border-purple-700">
-      <td className="sticky left-0 z-20 bg-[#220128] px-2 py-2 w-[80px] min-w-[80px]">{i + 1}</td>
-      <td className="px-2 py-2 text-yellow-300 w-[150px] min-w-[150px] break-words">
-        {formattedIds[r.fromUserId] || r.fromUserId}
-      </td>
-      <td className="px-2 py-2 break-words min-w-[140px]">
-{referrerIds[r.fromUserId] || "-"}      </td>
-      <td className="px-2 py-2 whitespace-nowrap min-w-[180px]">
-        {format(new Date(+r.blockTimestamp * 1000), "Pp")}
-      </td>
-      <td className="px-2 py-2 text-center min-w-[100px]">${rewardPerEntry}</td>
-      <td className="px-2 py-2 break-all min-w-[200px]">
-        <a
-          href={`https://polygonscan.com/tx/${r.transactionHash}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-400 underline"
-        >
-          {r.transactionHash.slice(0, 6)}...{r.transactionHash.slice(-6)}
-        </a>
-      </td>
-    </tr>
-  ))
-)}
+              displayedRewards
+                .sort((a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp))
+                .map((r, i) => (
+                  <tr key={i} className="border-t border-purple-700">
+                    <td className="sticky left-0 z-20 bg-[#220128] px-2 py-2 w-[80px] min-w-[80px]">
+                      {i + 1}
+                    </td>
+                    <td className="px-2 py-2 text-yellow-300 w-[150px] min-w-[150px] break-words">
+                      {formattedIds[r.fromUserId] || r.fromUserId}
+                    </td>
+                    <td className="px-2 py-2 break-words min-w-[140px]">
+                      {referrerIds[r.fromUserId] || "-"}
+                    </td>
+                    <td className="px-2 py-2 whitespace-nowrap min-w-[180px]">
+                      {format(new Date(+r.blockTimestamp * 1000), "Pp")}
+                    </td>
+                    <td className="px-2 py-2 text-center min-w-[100px]">
+                      ${rewardPerEntry}
+                    </td>
+                    <td className="px-2 py-2 break-all min-w-[200px]">
+                      <a
+                        href={`https://polygonscan.com/tx/${r.transactionHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 underline"
+                      >
+                        {r.transactionHash.slice(0, 6)}...{r.transactionHash.slice(-6)}
+                      </a>
+                    </td>
+                  </tr>
+                ))
+            )}
           </tbody>
         </table>
       </div>

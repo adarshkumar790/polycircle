@@ -79,21 +79,23 @@ export default function Trees({ data }: OrgChartTreeProps) {
     ({ nodeDatum }: { nodeDatum: ExtendedNodeDatum }) => {
       let bgColor = "#e9d5ff"; // fallback lilac
 
+
 switch (nodeDatum.rewardType) {
   case "DIRECT":
   case "DIRECT_REBIRTH":
-    bgColor = "#facc15"; // yellow
+    bgColor = "#eab308"; // Yellow - Tailwind: bg-yellow-500
     break;
   case "UPLINE":
   case "UPLINE_REBIRTH":
-    bgColor = "#60a5fa"; // blue
+    bgColor = "#60a5fa"; // Blue - Tailwind: bg-blue-400
     break;
   case "SUPER_UPLINE":
   case "SUPER_UPLINE_REBIRTH":
-    bgColor = "#a78bfa"; // purple
+    bgColor = "#a78bfa"; // Purple - Tailwind: bg-purple-400
     break;
   default:
-    bgColor = "#e9d5ff"; // fallback
+    bgColor = "#e9d5ff"; // Light Purple (Fallback) - Tailwind: bg-purple-200
+    break;
 }
 
 

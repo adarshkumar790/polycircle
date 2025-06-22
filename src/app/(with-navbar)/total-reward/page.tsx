@@ -1,11 +1,11 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/Redux/store";
-import { getFormattedId, getUserDetailsById } from "@/components/registerUser";
+import { getFormattedId } from "@/components/registerUser";
+import { getUserDetails } from "@/components/registerUser";
 import { useRegister } from "@/components/usehooks/usehook";
 import {
   getTotalReward,
@@ -69,17 +69,7 @@ export default function RewardsPage() {
     tab === "generation" ? LEVEL_REWARD_AMOUNTS[selectedLevel] || 1 : 10;
 
   const totalAmount = displayedRewards.length * rewardPerEntry;
-
   const allRewards = Object.values(levelData).flat();
-  const totalGlobalAmount =
-    tab === "generation"
-      ? Object.entries(levelData).reduce(
-          (sum, [levelStr, rewards]) =>
-            sum + (LEVEL_REWARD_AMOUNTS[+levelStr] || 1) * rewards.length,
-          1
-        )
-      : allRewards.length * 10;
-
   const generationAmount =
     (dashboardMainData?.grandTotalAmount ?? 0) -
     ((dashboardMainData?.uplineAmount ?? 0) + (dashboardMainData?.superUplineAmount ?? 0));
@@ -99,6 +89,7 @@ export default function RewardsPage() {
     if (!signer || !circleData) return;
 
     setLoading(true);
+
     const selectedLevels =
       tab === "generation"
       //@ts-ignore
@@ -120,22 +111,19 @@ export default function RewardsPage() {
       await Promise.all(
         uniqueFromIds.map(async (id) => {
           try {
-            const userId = parseInt(id);
-            const [{ formattedId }, { user }] = await Promise.all([
-              getFormattedId(signer, userId),
-              getUserDetailsById(signer, userId),
-            ]);
+            const userIdNum = parseInt(id);
 
+            const user = await getUserDetails(signer, userIdNum);
+            const { formattedId } = await getFormattedId(signer, userIdNum);
             formattedMap[id] = formattedId || id;
 
-            if (user?.referrerId) {
-              const { formattedId: refFormatted } = await getFormattedId(
-                signer,
-                parseInt(user.referrerId)
-              );
-              referrerMap[id] = refFormatted || user.referrerId;
+            if (user?.referrerId && Number(user.referrerId) !== 0) {
+              const { formattedId: refFormattedId } = await getFormattedId(signer, user.referrerId);
+              referrerMap[id] = refFormattedId || String(user.referrerId);
+            } else {
+              referrerMap[id] = "-";
             }
-          } catch {
+          } catch (err) {
             formattedMap[id] = id;
             referrerMap[id] = "-";
           }
@@ -159,9 +147,9 @@ export default function RewardsPage() {
     setEntriesToShow(val === "5" ? "5" : parseInt(val));
   };
 
+
   return (
     <div className="p-2 max-w-6xl mx-auto font-sans bg-black text-white">
-      {/* Header */}
       <div className="relative flex items-center justify-between mt-4">
         <Link
           href="/dashboards"
@@ -197,7 +185,6 @@ export default function RewardsPage() {
       {/* Controls */}
       <div className="bg-purple-900 rounded-t-md px-4 py-4 mt-4">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
-          {/* Left: Level */}
           {tab === "generation" && (
             <div className="flex items-center gap-2">
               <label className="text-sm font-medium">Level</label>
@@ -218,7 +205,6 @@ export default function RewardsPage() {
             </div>
           )}
 
-          {/* Center: Search */}
           <div className="w-full lg:w-[300px]">
             <input
               type="text"
@@ -229,7 +215,6 @@ export default function RewardsPage() {
             />
           </div>
 
-          {/* Right: Entries */}
           <div className="flex items-center gap-2">
             <label className="text-sm font-medium">Show</label>
             <select
@@ -292,33 +277,33 @@ export default function RewardsPage() {
               </tr>
             ) : (
               displayedRewards
-  .sort((a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp)) // descending order
-  .map((r, i) => (
-    <tr key={i} className="border-t border-purple-700">
-      <td className="sticky left-0 z-20 bg-[#220128] px-2 py-2 w-[80px] min-w-[80px]">{i + 1}</td>
-      <td className="px-2 py-2 text-yellow-300 w-[150px] min-w-[150px] break-words">
-        {formattedIds[r.fromUserId] || r.fromUserId}
-      </td>
-      <td className="px-2 py-2 break-words min-w-[140px]">
-        {referrerIds[r.fromUserId] || "-"}
-      </td>
-      <td className="px-2 py-2 whitespace-nowrap min-w-[180px]">
-        {format(new Date(+r.blockTimestamp * 1000), "Pp")}
-      </td>
-      <td className="px-2 py-2 text-center min-w-[100px]">${rewardPerEntry}</td>
-      <td className="px-2 py-2 break-all min-w-[200px]">
-        <a
-          href={`https://polygonscan.com/tx/${r.transactionHash}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-400 underline"
-        >
-          {r.transactionHash.slice(0, 6)}...{r.transactionHash.slice(-6)}
-        </a>
-      </td>
-    </tr>
-  ))
-)}
+                .sort((a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp))
+                .map((r, i) => (
+                  <tr key={i} className="border-t border-purple-700">
+                    <td className="sticky left-0 z-20 bg-[#220128] px-2 py-2 w-[80px] min-w-[80px]">{i + 1}</td>
+                    <td className="px-2 py-2 text-yellow-300 w-[150px] min-w-[150px] break-words">
+                      {formattedIds[r.fromUserId] || r.fromUserId}
+                    </td>
+                    <td className="px-2 py-2 break-words min-w-[140px]">
+                      {referrerIds[r.fromUserId] || "-"}
+                    </td>
+                    <td className="px-2 py-2 whitespace-nowrap min-w-[180px]">
+                      {format(new Date(+r.blockTimestamp * 1000), "Pp")}
+                    </td>
+                    <td className="px-2 py-2 text-center min-w-[100px]">${rewardPerEntry}</td>
+                    <td className="px-2 py-2 break-all min-w-[200px]">
+                      <a
+                        href={`https://polygonscan.com/tx/${r.transactionHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 underline"
+                      >
+                        {r.transactionHash.slice(0, 6)}...{r.transactionHash.slice(-6)}
+                      </a>
+                    </td>
+                  </tr>
+                ))
+            )}
           </tbody>
         </table>
       </div>

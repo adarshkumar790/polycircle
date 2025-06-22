@@ -5,15 +5,16 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/store";
-import { getFormattedId, getUserDetailsById } from "@/components/registerUser";
+import { getFormattedId, getUserDetails } from "@/components/registerUser";
 import { useRegister } from "@/components/usehooks/usehook";
 import type { RewardDistributed } from "@/GraphQuery/query";
 import Link from "next/link";
 
-
 type LevelData = {
   [level: number]: RewardDistributed[];
 };
+
+const FIXED_REWARD = 50;
 
 export default function RewardsPage() {
   const router = useRouter();
@@ -27,34 +28,38 @@ export default function RewardsPage() {
   const [formattedIds, setFormattedIds] = useState<Record<string, string>>({});
   const [referrerIds, setReferrerIds] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
-  const [entriesToShow, setEntriesToShow] = useState<number | "5">("5");
   const [searchText, setSearchText] = useState("");
 
   const rewards = levelData[selectedLevel] || [];
 
   const filteredRewards = rewards.filter((r) => {
+    const formattedId = formattedIds[r.fromUserId] || r.fromUserId;
+    const refId = referrerIds[r.fromUserId] || "";
+    const tx = r.transactionHash || "";
     const query = searchText.toLowerCase();
     return (
-      (formattedIds?.[r.fromUserId] || r.fromUserId)?.toLowerCase().includes(query) ||
-      (referrerIds?.[r.fromUserId] || "")?.toLowerCase().includes(query) ||
-      r.transactionHash?.toLowerCase().includes(query)
+      formattedId.toLowerCase().includes(query) ||
+      refId.toLowerCase().includes(query) ||
+      tx.toLowerCase().includes(query)
     );
   });
 
-  const displayedRewards =
-    entriesToShow === "5" ? filteredRewards : filteredRewards.slice(0, entriesToShow);
-
-  const rewardPerEntry = 11;
-  const totalAmount = displayedRewards.length * rewardPerEntry;
+  const totalAmount = filteredRewards.length * FIXED_REWARD;
   const allRewards = Object.values(levelData).flat();
-  const totalGlobalAmount = allRewards.length * rewardPerEntry;
+  const totalGlobalAmount = allRewards.length * FIXED_REWARD;
 
   useEffect(() => {
     const prepareData = async () => {
-      if (!signer || !circleData?.levels) return;
+      if (!signer || !circleData?.levelData) return;
 
       setLoading(true);
-      const levels = circleData.levels as unknown as LevelData;
+      const levels: LevelData = {};
+      for (const levelEntry of circleData.levelData) {
+        const level = parseInt(levelEntry.level);
+        if (!levels[level]) levels[level] = [];
+        //@ts-ignore
+        levels[level] = levels[level].concat(levelEntry.levelData || []);
+      }
       setLevelData(levels);
 
       const uniqueFromIds = Array.from(
@@ -68,19 +73,18 @@ export default function RewardsPage() {
         uniqueFromIds.map(async (id) => {
           try {
             const userId = parseInt(id);
-            const [{ formattedId }, { user }] = await Promise.all([
+            const [formattedUser, userDetails] = await Promise.all([
               getFormattedId(signer, userId),
-              getUserDetailsById(signer, userId),
+              getUserDetails(signer, userId),
             ]);
 
-            formattedMap[id] = formattedId || id;
+            formattedMap[id] = formattedUser.formattedId || id;
 
-            if (user?.referrerId) {
-              const { formattedId: refFormatted } = await getFormattedId(
-                signer,
-                parseInt(user.referrerId)
-              );
-              referrerMap[id] = refFormatted || user.referrerId;
+            if (userDetails.referrerId && userDetails.referrerId > 0) {
+              const refFormatted = await getFormattedId(signer, userDetails.referrerId);
+              referrerMap[id] = refFormatted.formattedId || String(userDetails.referrerId);
+            } else {
+              referrerMap[id] = "-";
             }
           } catch {
             formattedMap[id] = id;
@@ -95,15 +99,10 @@ export default function RewardsPage() {
     };
 
     prepareData();
-  }, [circleData?.levels, signer]);
+  }, [circleData?.levelData, signer]);
 
   const handleLevelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     router.replace(`?level=${e.target.value}`);
-  };
-
-  const handleEntriesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value;
-    setEntriesToShow(val === "5" ? "5" : parseInt(val));
   };
 
   return (
@@ -122,60 +121,43 @@ export default function RewardsPage() {
       </div>
 
       <div className="bg-purple-900 rounded-t-md px-4 py-4 mt-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center gap-4 flex-wrap">
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium whitespace-nowrap">Level</label>
-              <select
-                value={selectedLevel}
-                onChange={handleLevelChange}
-                className="text-white px-2 py-1 rounded border border-white bg-purple-800 text-sm"
-              >
-                {Object.keys(levelData)
-                  .filter((lvl) => parseInt(lvl) > 0)
-                  .sort((a, b) => parseInt(a) - parseInt(b))
-                  .map((lvl) => (
-                    <option key={lvl} value={lvl}>
-                      Level {lvl}
-                    </option>
-                  ))}
-              </select>
-            </div>
-
-           
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium whitespace-nowrap">Level</label>
+            <select
+              value={selectedLevel}
+              onChange={handleLevelChange}
+              className="text-white px-2 py-1 rounded border border-white bg-purple-800 text-sm"
+            >
+              {Object.keys(levelData)
+                .filter((lvl) => parseInt(lvl) > 0)
+                .sort((a, b) => parseInt(a) - parseInt(b))
+                .map((lvl) => (
+                  <option key={lvl} value={lvl}>
+                    Level {lvl}
+                  </option>
+                ))}
+            </select>
           </div>
 
-          <div className="w-full sm:w-auto flex-1 flex justify-center">
+          <div className="w-full lg:w-[280px] text-center">
             <input
               type="text"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
               placeholder="Search by User ID, Sponsor ID, or Tx Hash"
-              className="w-full max-w-xs bg-purple-800 border border-white text-white px-3 py-1.5 rounded text-sm placeholder-gray-300"
+              className="w-full bg-purple-800 border border-white text-white px-3 py-1.5 rounded text-sm placeholder-gray-300"
+              onChange={(e) => setSearchText(e.target.value)}
+              value={searchText}
             />
           </div>
-           <div className="flex items-center gap-2">
-              <label className="text-sm font-medium whitespace-nowrap">Show</label>
-              <select
-                value={entriesToShow}
-                onChange={handleEntriesChange}
-                className="bg-purple-800 border border-white text-white px-2 py-1 rounded text-sm"
-              >
-                <option value="all">All</option>
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="25">25</option>
-              </select>
-            </div>
         </div>
-        
 
         <div className="mt-3 text-sm text-center">
-          <strong>Level {selectedLevel}:</strong> {displayedRewards.length} entries | ${totalAmount.toFixed(2)}
+          <strong>Level {selectedLevel}:</strong> {filteredRewards.length} entries | ${totalAmount.toFixed(2)}
         </div>
-        {/* <div className="mt-1 text-sm text-center text-gray-300">
+
+        <div className="mt-1 text-xs text-center text-gray-300">
           <strong>Total (All Levels):</strong> {allRewards.length} entries | ${totalGlobalAmount.toFixed(2)}
-        </div> */}
+        </div>
       </div>
 
       <div className="overflow-x-auto bg-[#220128] rounded-b-xl scrollbar-hide w-full">
@@ -186,6 +168,7 @@ export default function RewardsPage() {
               <th className="px-2 py-2 w-[150px] min-w-[150px]">User Id</th>
               <th className="px-2 py-2 min-w-[140px]">Sponsor ID</th>
               <th className="px-2 py-2 min-w-[180px]">Join Date & Time</th>
+              <th className="px-2 py-2 text-center min-w-[100px]">Amount</th>
               <th className="px-2 py-2 min-w-[200px]">Transaction Hash</th>
             </tr>
           </thead>
@@ -196,41 +179,41 @@ export default function RewardsPage() {
                   Loading...
                 </td>
               </tr>
-            ) : displayedRewards.length === 0 ? (
+            ) : filteredRewards.length === 0 ? (
               <tr>
                 <td colSpan={6} className="text-center py-4 text-gray-300">
                   No rewards found at this level.
                 </td>
               </tr>
             ) : (
-             displayedRewards
-  .sort((a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp)) // descending order
-  .map((r, i) => (
-    <tr key={i} className="border-t border-purple-700">
-      <td className="sticky left-0 z-20 bg-[#220128] px-2 py-2 w-[80px] min-w-[80px]">{i + 1}</td>
-      <td className="px-2 py-2 text-yellow-300 w-[150px] min-w-[150px] break-words">
-        {formattedIds[r.fromUserId] || r.fromUserId}
-      </td>
-      <td className="px-2 py-2 break-words min-w-[140px]">
-        {referrerIds[r.fromUserId] || "-"}
-      </td>
-      <td className="px-2 py-2 whitespace-nowrap min-w-[180px]">
-        {format(new Date(+r.blockTimestamp * 1000), "Pp")}
-      </td>
-      {/* <td className="px-2 py-2 text-center min-w-[100px]">${rewardPerEntry}</td> */}
-      <td className="px-2 py-2 break-all min-w-[200px]">
-        <a
-          href={`https://polygonscan.com/tx/${r.transactionHash}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-400 underline"
-        >
-          {r.transactionHash.slice(0, 6)}...{r.transactionHash.slice(-6)}
-        </a>
-      </td>
-    </tr>
-  ))
-)}
+              filteredRewards
+                .sort((a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp))
+                .map((r, i) => (
+                  <tr key={i} className="border-t border-purple-700">
+                    <td className="sticky left-0 z-20 bg-[#220128] px-2 py-2 w-[80px] min-w-[80px]">
+                      {i + 1}
+                    </td>
+                    <td className="px-2 py-2 text-yellow-300 w-[150px] break-words">
+                      {formattedIds[r.fromUserId] || r.fromUserId}
+                    </td>
+                    <td className="px-2 py-2 break-words">{referrerIds[r.fromUserId] || "-"}</td>
+                    <td className="px-2 py-2 whitespace-nowrap">
+                      {format(new Date(+r.blockTimestamp * 1000), "Pp")}
+                    </td>
+                    <td className="px-2 py-2 text-center">${FIXED_REWARD}</td>
+                    <td className="px-2 py-2 break-all">
+                      <a
+                        href={`https://polygonscan.com/tx/${r.transactionHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 underline"
+                      >
+                        {r.transactionHash.slice(0, 6)}...{r.transactionHash.slice(-6)}
+                      </a>
+                    </td>
+                  </tr>
+                ))
+            )}
           </tbody>
         </table>
       </div>
