@@ -13,6 +13,8 @@ import LevelIncomesIcon from "../Icon/LevelIncomes";
 import UplineSuperIcon from "../Icon/UplineSuper";
 import LevelTimeIcon from "../Icon/LevelTime";
 import { Logout } from "./Logout";
+import { useSelector } from "react-redux";
+import { RootState } from "@/Redux/store";
 
 
 const CloseMenu: React.FC<{ onClick?: () => void }> = ({ onClick }) => (
@@ -39,6 +41,9 @@ const Navbar: React.FC = () => {
   const [incomeOpen, setIncomeOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const logout = Logout();
+    // const circleData = useSelector((state: RootState) => state.user.circleData);
+  
+    const userId = useSelector((state: RootState) => state.user.userId);
   
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
@@ -84,9 +89,13 @@ const Navbar: React.FC = () => {
           </a>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center justify-center">
-            <Image src="/logo/profile.svg" alt="User" width={34} height={34} />
+        <div className="flex items-center justify-center">
+          <div className="px-4 py-2 rounded-full bg-purple-900 text-white text-sm font-semibold shadow-md border border-gray-300 flex items-center gap-2">
+            <span>UserId:-</span>
+            <span className="text-purple-400 font-bold">{userId}</span>
           </div>
+        </div>
+
           <button
             className="text-purple-400 focus:outline-none"
             onClick={toggleMenu}
@@ -143,14 +152,14 @@ const Navbar: React.FC = () => {
                     className="flex items-center text-sm font-semibold text-white hover:text-purple-300 space-x-2"
                   >
                     <Image src="/logo/sponsor.svg" alt="sponsor" width={20} height={20} />
-                      Sponsor Reward
+                      Sponsor Team
                   </a>
                   <a
                     href="/dashboard/total-team"
                     className="flex items-center text-sm text-white font-semibold hover:text-purple-300"
                   >
                     <LevelTimeIcon />
-                    Level Team
+                    Total Team
                   </a>
                 </div>
               )}
@@ -177,7 +186,7 @@ const Navbar: React.FC = () => {
                     // },
                     {
                       href: "/total-team",
-                      text: "Level Reward",
+                      text: "Total Team",
                       icon: <LevelIncomesIcon />,
                     },
                     {
