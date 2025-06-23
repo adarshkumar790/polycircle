@@ -207,14 +207,19 @@ const finalData = rewardsList.map((x) => {
           {userId}
         </button>
         {childIds.map((id, i) => (
-          <button
-            key={id}
-            onClick={() => setActiveId(id)}
-            className={`px-4 py-2 rounded ${id === activeId ? "bg-teal-600" : "bg-gray-700"}`}
-          >
-            {`${userId}/${i + 1}`}
-          </button>
-        ))}
+  <button
+    key={id}
+    onClick={() => setActiveId(id)}
+    className={`px-4 py-2 rounded ${
+      id === activeId ? "bg-teal-600" : "bg-gray-700"
+    }`}
+  >
+    {i === childIds.length - 1
+      ? `Current ${userId}/${i+1}`
+      : `${userId}/${i + 1}`}
+  </button>
+))}
+
       </div>
 
       <div className="h-[400px] sm:h-[600px] w-full mb-6">
