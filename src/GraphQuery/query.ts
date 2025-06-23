@@ -155,10 +155,7 @@ const FROM_USERID_AND_RECEIVER_ID_FETCHTXN_QUERY = `
 
 const LATEST_CHILD_REBIRTH = `
   query LatestChildRebirth($mainId: String!) {
-    rebirths(
-      where: { mainId: $mainId }
-      
-    ) {
+    rebirths(where: { mainId: $mainId }, orderBy: blockTimestamp) {
       childId
     }
   }

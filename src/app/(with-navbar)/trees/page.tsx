@@ -31,6 +31,7 @@ export default function TreeFilteredRewardHistory() {
         const ids = await fetchAllChildRebirths(String(userId));
         const parsed = ids.map((id: string) => Number(id)).filter((id) => !isNaN(id));
         setChildIds(parsed);
+        console.log("child", parsed);
         //@ts-ignore
         setActiveId(parsed.length > 0 ? parsed[parsed.length - 1] : userId);
       } catch {
@@ -144,9 +145,9 @@ const finalData = rewardsList.map((x) => {
   const RewardTable = ({ rewards }: { rewards: RewardRecord[] }) => {
     const getRowColor = (type: string) => {
       switch (type) {
-        case "DIRECT": return "bg-purple-400";
+        case "DIRECT": return "bg-purple-400 text-black";
         case "UPLINE": return "bg-blue-400 text-black";
-        case "SUPER_UPLINE": return "bg-yellow-400";
+        case "SUPER_UPLINE": return "bg-yellow-400 text-black";
         case "UPLINE_REBIRTH":
         case "SUPER_UPLINE_REBIRTH":
 
@@ -234,7 +235,7 @@ const finalData = rewardsList.map((x) => {
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
           <li className="flex items-center">
             <span className="inline-block w-8 h-8 rounded-full bg-white border border-gray-400 mr-2"></span>
-            Self ID
+            Self
           </li>
           <li className="flex items-center">
             <span className="inline-block w-8 h-8 rounded-full bg-purple-400 border border-gray-400 mr-2"></span>
@@ -248,15 +249,15 @@ const finalData = rewardsList.map((x) => {
          
           <li className="flex items-center">
             <span className="inline-block w-8 h-8 rounded-full bg-green-500 mr-2"></span>
-            Rebirth Child
+            Rebirth
           </li>
           <li className="flex items-center">
             <span className="inline-block w-8 h-8 rounded-full bg-blue-500 mr-2"></span>
-            Upline Id
+            Upline
           </li>
            <li className="flex items-center">
             <span className="inline-block w-8 h-8 rounded-full bg-yellow-400 mr-2"></span>
-            Super Upline Id
+            Super Upline
           </li>
         </ul>
       </div>

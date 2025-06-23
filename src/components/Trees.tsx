@@ -114,7 +114,7 @@ export default function Trees({ data }: OrgChartTreeProps) {
         <g>
           <circle r={30} fill={bgColor} stroke="#000" strokeWidth={1} />
           <text
-            fill="#FFFFFF"
+            fill="#000"
             stroke="none"
             x={0}
             y={5}
