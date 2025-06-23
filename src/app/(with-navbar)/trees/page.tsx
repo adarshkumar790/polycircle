@@ -180,7 +180,7 @@ const finalData = rewardsList.map((x) => {
                 <td className="px-4 py-2">{new Date(Number(r.timestamp) * 1000).toLocaleString()}</td>
                 <td className="px-2 py-2 break-all min-w-[200px]">
                   {r?.transactionHash ? (
-                    <a href={`https://testnet.bscscan.com/tx/${r.transactionHash}`} target="_blank" rel="noopener noreferrer" className="text-white underline">
+                    <a href={`https://testnet.bscscan.com/tx/${r.transactionHash}`} target="_blank" rel="noopener noreferrer" className="text-blue-900 underline">
                       {r.transactionHash.slice(0, 6)}...{r.transactionHash.slice(-6)}
                     </a>
                   ) : "-"}
