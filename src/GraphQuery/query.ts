@@ -157,7 +157,7 @@ const LATEST_CHILD_REBIRTH = `
   query LatestChildRebirth($mainId: String!) {
     rebirths(
       where: { mainId: $mainId }
-      orderBy: id
+      
     ) {
       childId
     }

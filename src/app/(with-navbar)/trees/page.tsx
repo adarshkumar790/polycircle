@@ -163,8 +163,8 @@ const finalData = rewardsList.map((x) => {
               <th className="px-4 py-2 sticky left-0 z-10 bg-purple-900">Sr No</th>
               <th className="px-4 py-2">From ID</th>
               <th className="px-4 py-2">Amount</th>
-              <th className="px-4 py-2">Reward Type</th>
-              <th className="px-4 py-2">Level</th>
+              {/* <th className="px-4 py-2">Reward Type</th> */}
+              {/* <th className="px-4 py-2">Level</th> */}
               <th className="px-4 py-2">Date</th>
               <th className="px-4 py-2">Txn Hash</th>
             </tr>
@@ -175,8 +175,8 @@ const finalData = rewardsList.map((x) => {
                 <td className="px-4 py-2 sticky left-0 z-10 bg-inherit">{i + 1}</td>
                 <td className="px-4 py-2">{formattedFromIds.get(r.fromId) || r.fromId}</td>
                 <td className="px-4 py-2">10$</td>
-                <td className="px-4 py-2">{r.rewardType}</td>
-                <td className="px-4 py-2">{r.level}</td>
+                {/* <td className="px-4 py-2">{r.rewardType}</td> */}
+                {/* <td className="px-4 py-2">{r.level}</td> */}
                 <td className="px-4 py-2">{new Date(Number(r.timestamp) * 1000).toLocaleString()}</td>
                 <td className="px-2 py-2 break-all min-w-[200px]">
                   {r?.transactionHash ? (
@@ -229,6 +229,37 @@ const finalData = rewardsList.map((x) => {
           <h3 className="text-lg font-semibold text-center text-teal-400 mb-2">
             Circle: {activeId === Number(userId) ? `${userId}` : `${userId}/${childIds.indexOf(activeId) + 1}`}
           </h3>
+          <div className="mt-6 p-4 bg-gray-900 rounded-lg text-white text-sm w-full">
+        <h2 className="font-semibold mb-2">Name</h2>
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+          <li className="flex items-center">
+            <span className="inline-block w-8 h-8 rounded-full bg-white border border-gray-400 mr-2"></span>
+            Self ID
+          </li>
+          <li className="flex items-center">
+            <span className="inline-block w-8 h-8 rounded-full bg-purple-400 border border-gray-400 mr-2"></span>
+            Direct
+          </li>
+          
+          <li className="flex items-center">
+            <span className="inline-block w-8 h-8 rounded-full bg-red-500 mr-2"></span>
+            Vacant
+          </li>
+         
+          <li className="flex items-center">
+            <span className="inline-block w-8 h-8 rounded-full bg-green-500 mr-2"></span>
+            Rebirth Child
+          </li>
+          <li className="flex items-center">
+            <span className="inline-block w-8 h-8 rounded-full bg-blue-500 mr-2"></span>
+            Upline Id
+          </li>
+           <li className="flex items-center">
+            <span className="inline-block w-8 h-8 rounded-full bg-yellow-400 mr-2"></span>
+            Super Upline Id
+          </li>
+        </ul>
+      </div>
           <RewardTable rewards={rewards} />
         </div>
       )}
