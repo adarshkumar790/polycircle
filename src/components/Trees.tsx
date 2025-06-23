@@ -74,10 +74,8 @@ export default function Trees({ data }: OrgChartTreeProps) {
       // Assign color and formatted ID
       await Promise.all(
         allNodes.map(async (node) => {
-          // assign color based on rewardType
           node.bgColor = getColorFromRewardType(node.rewardType);
 
-          // format name
           const rawId = node.name;
           if (rawId && rawId !== "0") {
             try {
@@ -99,10 +97,8 @@ export default function Trees({ data }: OrgChartTreeProps) {
 
   const renderNode = useCallback(
     ({ nodeDatum }: { nodeDatum: ExtendedNodeDatum }) => {
-      // default color from rewardType
       let bgColor = nodeDatum.bgColor || "#e5e7eb";
 
-      // check for empty node
       const isEmptyNode =
         !nodeDatum.name || nodeDatum.name === "0" || nodeDatum.name.trim() === "";
 
@@ -113,16 +109,18 @@ export default function Trees({ data }: OrgChartTreeProps) {
       return (
         <g>
           <circle r={30} fill={bgColor} stroke="#000" strokeWidth={1} />
-          <text
-            fill="#000"
-            stroke="none"
-            x={0}
-            y={5}
-            textAnchor="middle"
-            fontSize="16"
-          >
-            {nodeDatum.name}
-          </text>
+          {!isEmptyNode && (
+            <text
+              fill="#000"
+              stroke="none"
+              x={0}
+              y={5}
+              textAnchor="middle"
+              fontSize="16"
+            >
+              {nodeDatum.name}
+            </text>
+          )}
         </g>
       );
     },

@@ -5,7 +5,7 @@ const features = [
   {
     icon: "/logo/fund.svg",
     title: "100% FUND DISTRIBUTION",
-    description: "Funds are distributed instantly. Users can withdraw anytime.",
+    description: "Funds are distributed instantly. Users will receive funds immediately",
   },
   {
     icon: "/logo/safes.svg",

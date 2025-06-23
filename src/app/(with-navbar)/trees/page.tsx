@@ -12,6 +12,7 @@ import { fetchAllChildRebirths } from "@/GraphQuery/query";
 import Trees, { ExtendedNodeDatum }  from "@/components/Trees"
 import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/store";
+import Link from "next/link";
 
 export default function TreeFilteredRewardHistory() {
   const { signer } = useRegister();
@@ -195,7 +196,13 @@ const finalData = rewardsList.map((x) => {
   };
 
   return (
-    <div className="bg-gray-900 text-white p-4 sm:p-6 rounded-md shadow-md max-w-6xl mx-auto mt-10">
+      <div className="bg-black">
+        <div className="flex justify-center mt-8">
+          <Link href="/dashboards" className="text-white font-bold">
+        Back
+          </Link>
+        </div>
+        <div className="bg-gray-900 text-white p-4 sm:p-6 rounded-md shadow-md max-w-6xl mx-auto mt-10">
       <h2 className="text-2xl font-bold mb-6 text-center text-teal-300">Tree</h2>
 
       <div className="flex flex-wrap gap-2 justify-center mb-6">
@@ -221,7 +228,7 @@ const finalData = rewardsList.map((x) => {
 ))}
 
       </div>
-
+        
       <div className="h-[400px] sm:h-[600px] w-full mb-6">
         {treeJson ? <Trees data={treeJson} /> : <div className="text-center text-yellow-300">Loading tree...</div>}
       </div>
@@ -248,8 +255,8 @@ const finalData = rewardsList.map((x) => {
           </li>
           
           <li className="flex items-center">
-            <span className="inline-block w-8 h-8 rounded-full bg-red-500 mr-2"></span>
-            Vacant
+            <span className="inline-block w-8 h-8 rounded-full bg-[#f87171] mr-2"></span>
+            Empty Circle
           </li>
          
           <li className="flex items-center">
@@ -269,6 +276,7 @@ const finalData = rewardsList.map((x) => {
           <RewardTable rewards={rewards} />
         </div>
       )}
+    </div>
     </div>
   );
 }

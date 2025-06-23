@@ -1,3 +1,4 @@
+import { Instagram } from "lucide-react";
 import Image from "next/image";
 import { FaFacebookF, FaTelegramPlane, FaYoutube } from "react-icons/fa";
 import { IoMdOpen } from "react-icons/io";
@@ -38,7 +39,7 @@ export default function Footer() {
           <h3 className="font-semibold text-lg md:mt-4">Stay Connected</h3>
             <div className="flex gap-3 text-white md:text-4xl text-4xl">
             <a
-              href="https://facebook.com/"
+              href="https://www.facebook.com/people/PolyCircle/61576905779456/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
@@ -46,13 +47,15 @@ export default function Footer() {
               <FaFacebookF className="bg-purple-700 p-2 rounded cursor-pointer hover:opacity-80" />
             </a>
             <a
-              href="#"
-              aria-label="Close"
+              href="https://x.com/PolyCircleVerse"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Twitter"
             >
               <IoClose className="bg-purple-700 p-2 rounded cursor-pointer hover:opacity-80" />
             </a>
             <a
-              href="https://youtube.com/"
+              href="https://youtube.com/@polycircle?si=g3mLY6uDciTiXzgY"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="YouTube"
@@ -66,6 +69,13 @@ export default function Footer() {
               aria-label="Telegram"
             >
               <FaTelegramPlane className="bg-purple-700 p-2 rounded cursor-pointer hover:opacity-80" />
+            </a>
+            <a href="https://www.instagram.com/polycircleverse/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            >
+              <Instagram size={36} className="bg-purple-700 p-2 rounded cursor-pointer hover:opacity-80"/>
             </a>
             </div>
         </div>

@@ -115,7 +115,7 @@ export default function RewardsPage() {
           Back
         </Link>
         <h1 className="text-xl md:text-3xl font-bold text-center flex-1">
-          Team Bussiness
+          Team Business
         </h1>
         <div className="w-[80px] md:w-[120px]" />
       </div>

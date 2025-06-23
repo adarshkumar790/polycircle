@@ -91,7 +91,7 @@ const Navbar: React.FC = () => {
         <div className="flex items-center gap-4">
         <div className="flex items-center justify-center">
           <div className="px-4 py-2 rounded-full bg-purple-900 text-white text-sm font-semibold shadow-md border border-gray-300 flex items-center gap-2">
-            <span>UserId:-</span>
+            <span>User Id :-</span>
             <span className="text-purple-400 font-bold">{userId}</span>
           </div>
         </div>
@@ -148,18 +148,18 @@ const Navbar: React.FC = () => {
               {myTeamOpen && (
                 <div className="ml-4 mt-2 space-y-3">
                   <a
-                    href="/dashboard/referral"
+                    href="/dashboard/referral-business"
                     className="flex items-center text-sm font-semibold text-white hover:text-purple-300 space-x-2"
                   >
                     <Image src="/logo/sponsor.svg" alt="sponsor" width={20} height={20} />
-                      Sponsor Team
+                      Sponsorer Business
                   </a>
                   <a
-                    href="/dashboard/total-team"
+                    href="/team-bussiness"
                     className="flex items-center text-sm text-white font-semibold hover:text-purple-300"
                   >
                     <LevelTimeIcon />
-                    Total Team
+                    Team Business
                   </a>
                 </div>
               )}
@@ -172,7 +172,7 @@ const Navbar: React.FC = () => {
               >
                 <div className="flex items-center space-x-2">
                   <IncomeIcon />
-                  <span className="font-semibold">Income Report</span>
+                  <span className="font-semibold">Reward</span>
                 </div>
                 <span>{incomeOpen ? "▲" : "▼"}</span>
               </button>
@@ -185,8 +185,8 @@ const Navbar: React.FC = () => {
                     //   // icon: <ReferallIcon />,
                     // },
                     {
-                      href: "/total-team",
-                      text: "Total Team",
+                      href: "/generation-reward",
+                      text: "Generation Reward",
                       icon: <LevelIncomesIcon />,
                     },
                     {

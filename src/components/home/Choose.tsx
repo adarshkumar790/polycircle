@@ -4,27 +4,27 @@ import Image from "next/image";
 const features = [
   {
     icon: '/logo/profiles.svg',
-    title: "PROFILE ASSURANCE",
+    title: "Global Business Opportunity",
     description:
-      "Your investments are strategically designed to generate consistent returns with our innovative economic model.",
+      "POLYCIRCLE is a 100% digital platform. You can join, refer, and earn from anywhere in the world—no physical products, no shipping, just pure digital business from your smartphone.",
   },
   {
     icon: '/logo/easygrowth.svg',
-    title: "EASY GROWTH",
+    title: "Instant Payout & Transparent System",
     description:
-      "A seamless and automated process ensures that your funds grow effortlessly through smart contracts and decentralized finance (DeFi) mechanisms.",
+      "Experience instant payouts with every earning directly credited to your wallet through a fully automated, transparent, and decentralized system where every referral and board movement is trackable—no delays, no manipulation, no middleman.",
   },
   {
     icon: '/logo/ultimate.svg',
-    title: "UNLIMITED INCOME",
+    title: "Lifetime Access & Influencer Friendly",
     description:
-      "With no earning caps, your potential scales as your participation increases, leveraging referral bonuses, team growth, and arbitrage opportunities.",
+      "Activate once with $50 for lifetime validity—no renewals or fees—perfect for influencers and affiliates to earn big with the viral 2x2 board system.",
   },
   {
     icon: '/logo/secure.svg',
-    title: "SAFE & SECURE",
+    title: "Scalable Growth with Expert Support",
     description:
-      "Built on blockchain technology, INOUT guarantees transparency, security, and trust, ensuring your funds remain protected at all times.",
+      "Unlock exponential income by adding just 2 direct members, triggering team expansion into hundreds—plus benefit from regular Zoom sessions, training, and a supportive community to accelerate your success.",
   },
 ];
 
@@ -36,8 +36,7 @@ const WhyChoosePolycircle: React.FC = () => {
           Why You Should Choose <span className="text-purple-500">PolyCircle</span>
         </h2>
         <p className="text-sm md:text-base text-gray-300 max-w-3xl mx-auto mb-10">
-          A decentralized, transparent, and secure platform offering sustainable profits,
-          unlimited earnings, and real-world utility through blockchain-powered arbitrage.
+          PolyCircle is the international community of the global decentralized ecosystem and the first-ever audited and trusted smart contract marketing matrix of the Polygon network. It operates via a self-executing algorithm that automatically distributes rewards between community members under a matrix marketing plan. Its code is publicly available, and all transactions are transparently recorded on polygonscan.com.
         </p>
       </div>
 
@@ -52,13 +51,13 @@ const WhyChoosePolycircle: React.FC = () => {
               <Image
                 src={feature.icon}
                 alt={feature.title}
-                width={180}
-                height={180}
+                width={200}
+                height={200}
                 className="object-contain"
               />
             </div>
             <div>
-              <h3 className="text-lg md:text-2xl font-semibold">{feature.title}</h3>
+              <h3 className="text-lg md:text-xl font-semibold">{feature.title}</h3>
               <p className="text-sm md:text-lg text-gray-300 mt-1">{feature.description}</p>
             </div>
           </div>
