@@ -8,6 +8,8 @@ import Navbar from '@/components/Navbar/Navbar'
 import { Providers } from './providers'
 import Provider from './provider'
 import Footer from '@/components/home/Footer'
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -31,6 +33,7 @@ export default async function RootLayout({
         <ContextProvider cookies={cookies}>
           <Providers>
             <Provider>
+              <ToastContainer position="top-center" autoClose={2000} />
           {children}
           </Provider>
           <Footer/>

@@ -114,12 +114,12 @@ export default function Trees({ data }: OrgChartTreeProps) {
         <g>
           <circle r={30} fill={bgColor} stroke="#000" strokeWidth={1} />
           <text
-            fill="#000"
+            fill="#FFFFFF"
             stroke="none"
             x={0}
             y={5}
             textAnchor="middle"
-            fontSize="12"
+            fontSize="16"
           >
             {nodeDatum.name}
           </text>

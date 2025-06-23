@@ -7,6 +7,8 @@ import { useRegister } from "@/components/usehooks/usehook";
 import { checkRegistrationStatus } from "@/components/registerUser";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
 
 export default function Register() {
   const router = useRouter();
@@ -29,7 +31,7 @@ export default function Register() {
 
   const handleAutomaticLogin = async () => {
     if (!signer) {
-      alert("Connect your wallet first");
+      toast.warning("Connect your wallet first");
       return;
     }
 
@@ -38,18 +40,18 @@ export default function Register() {
       dispatch(setUserId(result.userId.toString()));
       router.push("/dashboards");
     } else {
-      alert("You are not registered yet. Please register first.");
+      toast.error("You are not registered yet. Please register first.");
     }
   };
 
-  const handleViewUser = () => {
+   const handleViewUser = () => {
     if (!signer) {
-      alert("Connect your wallet first");
+      toast.warning("Connect your wallet first", );
       return;
     }
 
     if (!viewUserId.trim()) {
-      alert("Please enter a valid User ID.");
+      toast.warning("Please enter a valid User ID.");
       return;
     }
 
