@@ -14,6 +14,8 @@ import LevelIncomeIcon from "@/components/Icon/LevelIncome";
 import TeamIncomeIcon from "@/components/Icon/TeamIncome";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "react-toastify";
+
 import {
   getDirectReferrals,
   getUserDetails,
@@ -52,8 +54,8 @@ const PolycircleDashboard = () => {
     if (linkRef.current) {
       navigator.clipboard
         .writeText(linkRef.current.href)
-        .then(() => alert("Referral link copied!"))
-        .catch(() => alert("Failed to copy link."));
+        .then(() => toast.success("Referral link copied!"))
+        .catch(() => toast.error("Failed to copy link."));
     }
   };
 
