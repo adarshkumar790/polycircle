@@ -225,10 +225,10 @@ const PolycircleDashboard = () => {
 
           <Link
             ref={linkRef}
-            href={`/registration?referralId=${userId}`}
+            href={`https://polycircle.io/registration?referralId=${userId}`}
             className="text-purple-400 break-all text-xs md:text-xl"
           >
-            https://poly-circle.vercel.app/registration?referralId={userId}
+            https://polycircle.io?referralId={userId}
           </Link>
 
           {/* Copy Button */}

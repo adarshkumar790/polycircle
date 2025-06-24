@@ -58,7 +58,7 @@ const advantages = [
     )
   },
   {
-    icon: "/image/Transactional.svg",
+    icon: "/logo/simple.svg",
     title: "Simple System, Easy to Duplicate",
     description: (
       <ul className="list-disc pl-5 space-y-1">
@@ -67,7 +67,7 @@ const advantages = [
     )
   },
   {
-    icon: "/image/Transactional.svg",
+    icon: "/logo/perfect.svg",
     title: "Perfect for Everyone",
     description: (
       <ul className="list-disc pl-5 space-y-1">
