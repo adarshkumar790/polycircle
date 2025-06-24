@@ -15,7 +15,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'PolyCircle',
-  description: 'PolyCircle is a MLM',
+  description: 'PolyCircle is a decentralized, audited smart contract matrix on Polygon that auto-distributes rewards transparently.',
 }
 
 export default async function RootLayout({
