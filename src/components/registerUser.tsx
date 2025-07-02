@@ -19,7 +19,8 @@ const T_USDT_ADDRESS = "0xa709b84e21bdd371d7bdadF3F61ee36128693450";
 // const POLYCIRCLE_ADDRESS = "0xC5d4B2c109804C7BfF6dB53A3879C0B04159C4e3"
 // const POLYCIRCLE_ADDRESS = "0xE8F86eAE014e044F666294F3c838160B2A31a818"
 // const POLYCIRCLE_ADDRESS = "0xD78D3c57d47a70F13a084DBaf0B8047D304f2A45"
-const POLYCIRCLE_ADDRESS = "0x5EB74AB18170F17e1f230df9B243d36652605CF6"
+// const POLYCIRCLE_ADDRESS = "0x5EB74AB18170F17e1f230df9B243d36652605CF6"
+const POLYCIRCLE_ADDRESS = "0x980772c3EcA05d7D5D94D39e7c90383A4998c963";
 
 //for registration, we need to approve the USDT contract to spend our USDT tokens
 // and then call the register function on the PolyCircle contract with the referrer ID
@@ -406,6 +407,25 @@ export async function getRewardHistoryByUserId(
     return {
       rewards: null,
       error: error.reason || error.message || "Failed to fetch reward history.",
+    };
+  }
+}
+
+export async function getPendingRebirths(
+  signer: any
+): Promise<{ rebirths: string[] | null; error?: string }> {
+  try {
+    const contract = new Contract(POLYCIRCLE_ADDRESS, POLYCIRCLE_ABI, signer);
+    const rebirths: bigint[] = await contract.getPendingRebirths();
+ 
+   
+    const formatted = rebirths.map((r) => r.toString());
+
+    return { rebirths: formatted };
+  } catch (error: any) {
+    return {
+      rebirths: null,
+      error: error.reason || error.message || 'Failed to fetch pending rebirths.',
     };
   }
 }

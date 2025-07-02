@@ -4,17 +4,18 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setUserId } from "@/Redux/store/userSlice";
 import { useRegister } from "@/components/usehooks/usehook";
-import { checkRegistrationStatus } from "@/components/registerUser";
+import { checkRegistrationStatus, getPendingRebirths } from "@/components/registerUser";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
 
 export default function Register() {
   const router = useRouter();
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
-
+  const [rebirths, setRebirths] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const refFromUrl = searchParams.get("ref") || "1";
   const [viewUserId, setViewUserId] = useState("");
 
@@ -44,9 +45,9 @@ export default function Register() {
     }
   };
 
-   const handleViewUser = () => {
+  const handleViewUser = () => {
     if (!signer) {
-      toast.warning("Connect your wallet first", );
+      toast.warning("Connect your wallet first");
       return;
     }
 
@@ -58,6 +59,47 @@ export default function Register() {
     dispatch(setUserId(viewUserId));
     router.push("/dashboards");
   };
+
+  const handleRegisterWithCheck = async () => {
+    if (!signer) {
+      toast.warning("Connect your wallet to register");
+      return;
+    }
+
+    if (!referralId.trim()) {
+      toast.warning("Please enter a referral ID");
+      return;
+    }
+
+    // Check if referralId is in rebirth list
+    const referralExistsInRebirths = rebirths.includes(referralId);
+
+    if (referralExistsInRebirths) {
+      toast.error("Referral ID is undergoing rebirth. Try a different ID or wait.");
+      return;
+    }
+
+    // Proceed with normal registration
+    handleRegister();
+  };
+
+  useEffect(() => {
+    if (!signer) return;
+
+    const fetchRebirths = async () => {
+      setLoading(true);
+      const { rebirths, error } = await getPendingRebirths(signer);
+      if (error) {
+        setError(error);
+        toast.error(error);
+      } else {
+        setRebirths(rebirths || []);
+      }
+      setLoading(false);
+    };
+
+    fetchRebirths();
+  }, [signer]);
 
   return (
     <div
@@ -138,7 +180,7 @@ export default function Register() {
             className="w-full px-4 py-2 rounded bg-slate-900 border border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-400"
           />
           <button
-            onClick={handleRegister}
+            onClick={handleRegisterWithCheck}
             className="w-1/2 px-4 py-2 rounded bg-white text-purple-700 font-semibold shadow hover:bg-purple-100 transition"
           >
             REGISTER
