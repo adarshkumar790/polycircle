@@ -68,13 +68,13 @@ export default function TreeFilteredRewardHistory() {
         return;
       }
 
-      const filtered = (rawRewards || []).filter((r) => ids.includes(Number(r.fromId)));
+      const filtered = (rawRewards || []).filter((r) => ids.includes(Number(r.fromUserId)));
 
       const latestByFromId = new Map<string, RewardRecord>();
       for (const reward of filtered) {
-        const existing = latestByFromId.get(reward.fromId);
+        const existing = latestByFromId.get(reward.fromUserId);
         if (!existing || Number(reward.timestamp) > Number(existing.timestamp)) {
-          latestByFromId.set(reward.fromId, reward);
+          latestByFromId.set(reward.fromUserId, reward);
         }
       }
 
@@ -87,7 +87,7 @@ const superUplineRewards = circleData?.superUplineRewards || [];
 const allRewards = [...levelRewards, ...uplineRewards, ...superUplineRewards];
 
 const finalData = rewardsList.map((x) => {
-  const tx = allRewards.find((z: any) => z.fromUserId === x.fromId)?.transactionHash || "";
+  const tx = allRewards.find((z: any) => z.fromUserId === x.fromUserId)?.transactionHash || "";
   return {
     ...x,
     transactionHash: tx,
@@ -100,17 +100,17 @@ const finalData = rewardsList.map((x) => {
       await Promise.all(
         finalData.map(async (r) => {
           try {
-            const { formattedId } = await getFormattedId(signer, Number(r.fromId));
-            formattedMap.set(r.fromId, formattedId);
+            const { formattedId } = await getFormattedId(signer, Number(r.fromUserId));
+            formattedMap.set(r.fromUserId, formattedId);
           } catch {
-            formattedMap.set(r.fromId, r.fromId);
+            formattedMap.set(r.fromUserId, r.fromUserId);
           }
         })
       );
       setFormattedFromIds(formattedMap);
 
       const toNode = (id: number): ExtendedNodeDatum => {
-        const reward = finalData.find((r) => Number(r.fromId) === id);
+        const reward = finalData.find((r) => Number(r.fromUserId) === id);
         return {
           name: id.toString(),
           //@ts-ignore
@@ -175,7 +175,7 @@ const finalData = rewardsList.map((x) => {
             {rewards.map((r, i) => (
               <tr key={i} className={`${getRowColor(r.rewardType)} border-b`}>
                 <td className="px-4 py-2 sticky left-0 z-10 bg-inherit">{i + 1}</td>
-                <td className="px-4 py-2">{formattedFromIds.get(r.fromId) || r.fromId}</td>
+                <td className="px-4 py-2">{formattedFromIds.get(r.fromUserId) || r.fromUserId}</td>
                 <td className="px-4 py-2">10$</td>
                 {/* <td className="px-4 py-2">{r.rewardType}</td> */}
                 {/* <td className="px-4 py-2">{r.level}</td> */}

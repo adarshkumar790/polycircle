@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { getUserFullTree } from "@/components/registerUser";
 import { useRegister } from "@/components/usehooks/usehook";
-import { FromUserIdANDReceiverIdFetchTXNQuery } from "@/GraphQuery/query";
+import { FromUserIdANDreceiverUserIdFetchTXNQuery } from "@/GraphQuery/query";
 
 interface TreeNode {
   userId: number;
@@ -97,15 +97,15 @@ export default function TreeLevelViewer() {
     const allUserIds = Array.from(new Set(Object.values(levelMap).flat()));
     const txnMap: Record<number, TxnData[]> = {};
 
-    for (const fromId of allUserIds) {
+    for (const fromUserId of allUserIds) {
       try {
-        const transactions = await FromUserIdANDReceiverIdFetchTXNQuery(
+        const transactions = await FromUserIdANDreceiverUserIdFetchTXNQuery(
           String(userId),
-          String(fromId)
+          String(fromUserId)
         );
 
-        txnMap[fromId] = transactions.map((txn: any) => ({
-          userId: fromId,
+        txnMap[fromUserId] = transactions.map((txn: any) => ({
+          userId: fromUserId,
           dateTime: txn.blockTimestamp
             ? new Date(Number(txn.blockTimestamp) * 1000).toLocaleString()
             : "N/A",
@@ -124,7 +124,7 @@ export default function TreeLevelViewer() {
           hash: txn.transactionHash,
         }));
       } catch (e) {
-        txnMap[fromId] = [];
+        txnMap[fromUserId] = [];
       }
     }
 

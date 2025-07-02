@@ -71,7 +71,7 @@ const PolycircleDashboard = () => {
   const [referrals, setReferrals] = useState<number[]>([]);
   const [referralsLoading, setReferralsLoading] = useState(true);
   const [directCount, setDirectCount] = useState(0);
-  const [childIds, setChildIds] = useState<string[]>([]);
+  const [childUserIds, setchildUserIds] = useState<string[]>([]);
   const [globalAmount, setGlobalAmount] = useState<number>(0);
   const [teamCount, setTeamCount] = useState<number>(0);
   const [totalTeamAmount, setTotalTeamAmount] = useState<number>(0);
@@ -88,7 +88,7 @@ const PolycircleDashboard = () => {
   //     try {
   //       const ids = await fetchAllChildRebirths(String(userId));
   //       //   console.log(ids);
-  //       setChildIds(ids);
+  //       setchildUserIds(ids);
   //     } catch (err) {
   //       console.error("Failed to fetch child IDs", err);
   //     } finally {
@@ -126,12 +126,12 @@ const PolycircleDashboard = () => {
 
   //   const fetchUplineAndSuperUpline = async () => {
   //     try {
-  //       const receiverIds = [userId as any, ...childIds];
-  //       console.log(receiverIds);
+  //       const receiverUserIds = [userId as any, ...childUserIds];
+  //       console.log(receiverUserIds);
 
   //       const [superUplineData, uplineData] = await Promise.all([
-  //         superUplineToalAmount(receiverIds),
-  //         uplineToalAmount(receiverIds),
+  //         superUplineToalAmount(receiverUserIds),
+  //         uplineToalAmount(receiverUserIds),
   //       ]);
 
   //       const superTotal = superUplineData.reduce(
@@ -166,7 +166,7 @@ const PolycircleDashboard = () => {
 
   //   fetchUplineAndSuperUpline();
   //   fetchDirect();
-  // }, [userId, childIds]);
+  // }, [userId, childUserIds]);
 
   // useEffect(() => {
   //   fetchAllRewardsAndTeamCount()
@@ -188,7 +188,7 @@ const PolycircleDashboard = () => {
     // fetchLevelRewards([userId])
     //   .then((levels) => {
     //     const allRewards = Object.values(levels).flat();
-    //     const uniqueUserIds = new Set(allRewards.map((r) => r.fromId));
+    //     const uniqueUserIds = new Set(allRewards.map((r) => r.fromUserId));
     //     setGlobalAmount(allRewards.length * 50);
     //     setTotalTeamAmount(allRewards.length * 50);
     //     setTeamCount(uniqueUserIds.size);
@@ -205,7 +205,7 @@ const PolycircleDashboard = () => {
 
 
   const dashboardData = [
-    { title: "Current Circle", icon: <CurrentCircleIcon />, value: "", link: "/trees" },
+    { title: "Current Circle", icon: <CurrentCircleIcon />, value: "", link: "/tree/current-circle" },
     { title: "Sponsor Team", icon: <ReferralIcon />, value: `${refrelldata || 0}`, link: "/dashboard/referral" },
     { title: "Total Team", icon: <TeamIcon />, value: `${dashboardMainData?.teamCount.toString() || 0}`, link: "/total-team" },
     { title: "Sponsorer  Business", icon: <ReferalBusnessIcon />, value: `$${refrellAmount.toFixed(2)}`, link: "/dashboard/referral-business" },

@@ -8,7 +8,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   fetchAllChildRebirths,
-  FromUserIdANDReceiverIdFetchTXNQuery,
+  FromUserIdANDreceiverUserIdFetchTXNQuery,
 } from "@/GraphQuery/query";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/store";
@@ -43,9 +43,9 @@ export default function OrgTreePage() {
   const [treeData, setTreeData] = useState<ExtendedNodeDatum | null>(null);
   const [circleData, setCircleData] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [childIds, setChildIds] = useState<string[]>([]);
+  const [childUserIds, setchildUserIds] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
+  const [selectedchildUserId, setSelectedchildUserId] = useState<string | null>(null);
   const [navigationStack, setNavigationStack] = useState<string[]>([]);
 
   const fetchTreeAndTransactions = async (id: number) => {
@@ -93,10 +93,10 @@ export default function OrgTreePage() {
 
     setTreeData(newTree);
 
-    const receiverIdStr = String(result.userId);
+    const receiverUserIdStr = String(result.userId);
     const txnPromises = fromUserIds.map(async (fromId) => {
-      const transactions = await FromUserIdANDReceiverIdFetchTXNQuery(
-        receiverIdStr,
+      const transactions = await FromUserIdANDreceiverUserIdFetchTXNQuery(
+        receiverUserIdStr,
         String(fromId)
       );
       return transactions
@@ -151,7 +151,7 @@ export default function OrgTreePage() {
       setLoading(true);
       try {
         const ids = await fetchAllChildRebirths(String(userId));
-        setChildIds(ids);
+        setchildUserIds(ids);
       } catch (err) {
         setError("Failed to fetch child IDs");
       } finally {
@@ -163,7 +163,7 @@ export default function OrgTreePage() {
   }, [userId]);
 
   const handleChildClick = async (id: string) => {
-    setSelectedChildId(id);
+    setSelectedchildUserId(id);
     setNavigationStack((prev) => [...prev, id]);
     await fetchTreeAndTransactions(Number(id));
   };
@@ -173,7 +173,7 @@ export default function OrgTreePage() {
     newStack.pop();
     const prevId = newStack[newStack.length - 1];
     setNavigationStack(newStack);
-    setSelectedChildId(prevId);
+    setSelectedchildUserId(prevId);
     await fetchTreeAndTransactions(Number(prevId));
   };
 
@@ -182,9 +182,9 @@ export default function OrgTreePage() {
   }
 
   const getCircleLabel = () => {
-    if (selectedChildId) {
-      const index = childIds.indexOf(selectedChildId);
-      if (index !== -1 && index === childIds.length - 1) {
+    if (selectedchildUserId) {
+      const index = childUserIds.indexOf(selectedchildUserId);
+      if (index !== -1 && index === childUserIds.length - 1) {
         return "Current";
       }
       return `${navigationStack[0]}/${index + 1}`;
@@ -214,7 +214,7 @@ export default function OrgTreePage() {
         <button
           onClick={() => handleChildClick(navigationStack[0])}
           className={`px-4 py-2 rounded text-white transition ${
-            selectedChildId === null || selectedChildId === navigationStack[0]
+            selectedchildUserId === null || selectedchildUserId === navigationStack[0]
               ? "bg-green-700"
               : "bg-blue-600 hover:bg-blue-800"
           }`}
@@ -223,9 +223,9 @@ export default function OrgTreePage() {
         </button>
 
         {/* Child buttons */}
-        {childIds.map((id, index) => {
-  const isLast = index === childIds.length - 1;
-  const isSelected = selectedChildId === id;
+        {childUserIds.map((id, index) => {
+  const isLast = index === childUserIds.length - 1;
+  const isSelected = selectedchildUserId === id;
   const label = isLast
     ? `Current (${navigationStack[0]}/${index + 1})`
     : `${navigationStack[0]}/${index + 1}`;

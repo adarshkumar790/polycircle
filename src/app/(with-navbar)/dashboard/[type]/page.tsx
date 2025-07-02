@@ -15,9 +15,10 @@ export default function DashboardTablePage() {
   const { signer } = useRegister();
   const userId = useSelector((state: RootState) => state.user.userId);
   const circleData = useSelector((state: RootState) => state.user.circleData);
+  console.log("circleData", circleData);
   const setTotalForType = useTotalStore((state) => state.setTotalForType);
 
-  const receiverId = String(userId);
+  const receiverUserId = String(userId);
   const [selectedLevel, setSelectedLevel] = useState(1);
   const [entriesCount, setEntriesCount] = useState(5);
   const [rewards, setRewards] = useState<RewardDistributed[]>([]);
@@ -94,7 +95,7 @@ export default function DashboardTablePage() {
   const formattedData = rewards.map((reward) => ({
     userId: reward.fromUserId,
     ...(type === "referral" || type === "referral-business"
-      ? { referralId: reward.receiverId }
+      ? { referralId: reward.receiverUserId }
       : {}),
     blockTimestamp: reward.blockTimestamp,
     joinDateTime: new Date(Number(reward.blockTimestamp) * 1000).toLocaleString(),

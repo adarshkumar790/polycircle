@@ -49,7 +49,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     columns.some((col) => {
       const rawValue = String(row[col.accessor] || "").toLowerCase();
       const formattedValue =
-        (col.accessor === "fromId" || col.accessor === "userId") &&
+        (col.accessor === "fromUserId" || col.accessor === "userId") &&
         formattedIdMap[row[col.accessor]]
           ? formattedIdMap[row[col.accessor]].toLowerCase()
           : "";
@@ -68,7 +68,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
       const idsToFormat = new Set<string>();
       data.forEach((row) => {
-        const id = row.fromId || row.userId;
+        const id = row.fromUserId || row.userId;
         if (id && !formattedIdMap[id]) {
           idsToFormat.add(id);
         }
@@ -206,7 +206,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 {columns.map((col, colIndex) => {
                   let cellData = row[col.accessor];
                   if (
-                    (col.accessor === "fromId" || col.accessor === "userId") &&
+                    (col.accessor === "fromUserId" || col.accessor === "userId") &&
                     formattedIdMap[cellData]
                   ) {
                     cellData = formattedIdMap[cellData];

@@ -19,7 +19,7 @@ const T_USDT_ADDRESS = "0xa709b84e21bdd371d7bdadF3F61ee36128693450";
 // const POLYCIRCLE_ADDRESS = "0xC5d4B2c109804C7BfF6dB53A3879C0B04159C4e3"
 // const POLYCIRCLE_ADDRESS = "0xE8F86eAE014e044F666294F3c838160B2A31a818"
 // const POLYCIRCLE_ADDRESS = "0xD78D3c57d47a70F13a084DBaf0B8047D304f2A45"
-const POLYCIRCLE_ADDRESS = "0x04B8e9bA8597e1eD44e49B163226b07564F3c05b"
+const POLYCIRCLE_ADDRESS = "0x5EB74AB18170F17e1f230df9B243d36652605CF6"
 
 //for registration, we need to approve the USDT contract to spend our USDT tokens
 // and then call the register function on the PolyCircle contract with the referrer ID
@@ -123,7 +123,7 @@ export async function getUserDetails(
 
     console.log("Calling getUserDetails with userId:", userId);
 
-    const details = await contract.getUserDetails(userId);
+    const details = await contract.users(userId);
 
     console.log("Received user details:", details);
 
@@ -170,7 +170,7 @@ export async function getUserFullTree(
   try {
     const contract = new ethers.Contract(POLYCIRCLE_ADDRESS, POLYCIRCLE_ABI, signer);
 
-    const result = await contract.getUserFullTree(userId);
+    const result = await contract?.getUserFullTree(userId);
     console.log("getUserFullTree result:", result);
 
     return {
@@ -221,11 +221,11 @@ export async function getDirectReferrals(
   }
 }
 
-// getChildIds retrieves the child IDs for a given user ID
-export async function getChildId(
+// getchildUserIds retrieves the child IDs for a given user ID
+export async function getchildUserId(
   signer: ethers.Signer | null | undefined,
   userId: number
-): Promise<{ childIds: number[]; error?: string }> {
+): Promise<{ childUserIds: number[]; error?: string }> {
   try {
     if (!signer) {
       throw new Error("No signer provided.");
@@ -239,18 +239,18 @@ export async function getChildId(
 
     const contract = new ethers.Contract(POLYCIRCLE_ADDRESS, POLYCIRCLE_ABI, provider);
 
-    console.log("Calling getChildIds with userId:", userId);
-    const childIdBigInts: bigint[] = await contract.getChildIds(userId);
-    const childIds = childIdBigInts.map((id) => Number(id));
-    console.log("Child IDs:", childIds);
+    console.log("Calling getchildUserIds with userId:", userId);
+    const childUserIdBigInts: bigint[] = await contract.getchildUserIds(userId);
+    const childUserIds = childUserIdBigInts.map((id) => Number(id));
+    console.log("Child IDs:", childUserIds);
 
     return {
-      childIds,
+      childUserIds,
     };
   } catch (error: any) {
-    console.error("getChildIds error:", error);
+    console.error("getchildUserIds error:", error);
     return {
-      childIds: [],
+      childUserIds: [],
       error: error.reason || error.message || "Unknown error",
     };
   }
@@ -281,6 +281,7 @@ export async function getTotalEarningWithChildren(
   try {
     const contract = new Contract(POLYCIRCLE_ADDRESS, POLYCIRCLE_ABI, signer);
     const earning = await contract.getTotalGrossEarning(userAddress);
+    console.log("Total earning with children:", earning.toString());
     const totalEarning = formatUnits(earning, 6);
     return { totalEarning };
   } catch (error: any) {
@@ -314,7 +315,7 @@ export async function getAddressById(
 ): Promise<{ userAddress: string; error?: string }> {
   try {
     const contract = new Contract(POLYCIRCLE_ADDRESS, POLYCIRCLE_ABI, signer);
-    const userAddress: string = await contract.getAddressById(userId);
+    const userAddress: string = await contract.getAddressByUserId(userId);
     return { userAddress };
   } catch (error: any) {
     return {
@@ -333,7 +334,7 @@ export type UserStruct = {
   exists: boolean;
   totalEarnings: string;
   userAddress: string;
-  mainId: string;
+  mainUserId: string;
   netTotalEarning: string;
   grossEarning: string;
   netLockedAmount: string;
@@ -357,7 +358,7 @@ export async function getUserDetailsById(
       exists: result.exists,
       totalEarnings: result.totalEarnings.toString(),
       userAddress: result.userAddress,
-      mainId: result.mainId.toString(),
+      mainUserId: result.mainUserId.toString(),
       netTotalEarning: result.netTotalEarning.toString(),
       grossEarning: result.grossEarning.toString(),
       netLockedAmount: result.netLockedAmount.toString(),
@@ -378,7 +379,7 @@ export type RewardRecord = {
   timestamp: string;
   amount: string;
   rewardType: string;
-  fromId: string;
+  fromUserId: string;
   level: string;
   transactionHash:string;
   refrellId:string
@@ -396,7 +397,7 @@ export async function getRewardHistoryByUserId(
       timestamp: reward.timestamp.toString(),
       amount: reward.amount.toString(),
       rewardType: reward.rewardType,
-      fromId: reward.fromId.toString(),
+      fromUserId: reward.fromUserId.toString(),
       level: reward.level.toString(),
     }));
 

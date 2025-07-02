@@ -100,7 +100,7 @@ export default function RewardsPage() {
 
     setLevelData(selectedLevels);
 
-    const uniqueFromIds = Array.from(
+    const uniquefromUserIds = Array.from(
       new Set(Object.values(selectedLevels).flat().map((r) => r.fromUserId))
     );
 
@@ -109,7 +109,7 @@ export default function RewardsPage() {
       const referrerMap: Record<string, string> = {};
 
       await Promise.all(
-        uniqueFromIds.map(async (id) => {
+        uniquefromUserIds.map(async (id) => {
           try {
             const userIdNum = parseInt(id);
 
