@@ -41,7 +41,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
 
   const totalAmount = data.reduce((sum, row) => {
-    const raw = row.amount?.toString().replace(/[^0-9.]/g, "") || "0";
+    const raw = row?.amount?.toString().replace(/[^0-9.]/g, "") || "0";
     return sum + parseFloat(raw);
   }, 0);
 
