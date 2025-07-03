@@ -92,7 +92,7 @@ const Navbar: React.FC = () => {
         <div className="flex items-center justify-center">
           <div className="px-4 py-2 rounded-full bg-purple-900 text-white text-sm font-semibold shadow-md border border-gray-300 flex items-center gap-2">
             <span>User Id :-</span>
-            <span className="text-purple-400 font-bold">{userId}</span>
+            <span className="text-purple-400 font-bold">{userId || ""}</span>
           </div>
         </div>
 

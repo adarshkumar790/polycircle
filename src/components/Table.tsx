@@ -46,8 +46,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     return sum + parseFloat(raw);
   }, 0);
 
-  const filteredData = data.filter((row) =>
+  console.log("DATA", data);
+  const filteredData = data.filter(x=>x!==undefined).filter((row) =>
     columns.some((col) => {
+      console.log(col);
       const rawValue = String(row[col?.accessor] || "").toLowerCase();
       const formattedValue =
         (col.accessor === "fromUserId" || col.accessor === "userId") &&
