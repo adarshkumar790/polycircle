@@ -124,7 +124,7 @@ export async function getUserDetails(
 
     console.log("Calling getUserDetails with userId:", userId);
 
-    const details = await contract.users(userId);
+    const details = await contract.getUserDetailsByUserId(userId);
 
     console.log("Received user details:", details);
 

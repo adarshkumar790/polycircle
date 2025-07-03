@@ -143,7 +143,7 @@ const finalData = rewardsList.map((x) => {
     fetchData();
   }, [signer, activeId, circleData]);
 
-  const RewardTable = ({ rewards }: { rewards: RewardRecord[] }) => {
+   const RewardTable = ({ rewards }: { rewards: RewardRecord[] }) => {
     const getRowColor = (type: string) => {
       switch (type) {
         case "DIRECT": return "bg-purple-400 text-black";

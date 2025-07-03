@@ -122,7 +122,7 @@ export default function Trees({ data }: OrgChartTreeProps) {
     const isRoot = hierarchyPointNode.depth === 0;
     const isVacant = nodeDatum.name === "0" || nodeDatum.name === "";
 
-    let bgColor = "#6495ED";
+    let bgColor = "#4ade80";
     const label = isVacant ? "Vacant" : nodeDatum.name;
 
     if (isRoot) {
@@ -135,32 +135,30 @@ export default function Trees({ data }: OrgChartTreeProps) {
       } else if (circleData?.superUplineRewards.find((x) => x.fromUserId === nodeDatum.name)) {
         bgColor = "#1071e5"; 
       } else if (circleData?.levelData.find((x) => x.level === nodeDatum.name)) {
-        bgColor = "#ffe342";
+        bgColor = "#4ade80";
       }
     }
 
     const textColor = "#a855f7";
     const radius = isMobile ? 35 : 45;
+    
 
     return (
-      <g>
-        <circle r={radius} fill={bgColor} stroke="#00000050" strokeWidth={4} />
-        <text
-          x={0}
-          y={5}
-          textAnchor="middle"
-          dominantBaseline="middle"
-          fill={textColor}
-          fontSize={isMobile ? 12 : 14}
-          fontWeight="100"
-          style={{
-            pointerEvents: "none",
-            fontFamily: "sans-serif",
-          }}
-        >
-          {label}
-        </text>
-      </g>
+     <g>
+          <circle r={30} fill={bgColor} stroke="#000" strokeWidth={1} />
+           (
+            <text
+              fill="#000"
+              stroke="none"
+              x={0}
+              y={5}
+              textAnchor="middle"
+              fontSize="16"
+            >
+              {nodeDatum.name}
+            </text>
+          )
+        </g>
     );
   },
   [isMobile, formattedCircleData]

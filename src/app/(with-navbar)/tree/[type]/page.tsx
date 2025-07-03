@@ -8,7 +8,6 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   fetchAllChildRebirths,
-  FromUserIdANDreceiverUserIdFetchTXNQuery,
 } from "@/GraphQuery/query";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/store";
@@ -47,6 +46,7 @@ export default function OrgTreePage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedchildUserId, setSelectedchildUserId] = useState<string | null>(null);
   const [navigationStack, setNavigationStack] = useState<string[]>([]);
+  const _circleData = useSelector((state: RootState) => state.user.circleData);
 
   const fetchTreeAndTransactions = async (id: number) => {
     const result = await getUserFullTree(signer as any, id);
@@ -66,6 +66,8 @@ export default function OrgTreePage() {
       result.rightLeftId,
       result.rightRightId,
     ].filter((id) => id !== 0);
+
+
 
     const fromUserIds = Array.from(
       new Set(allIds.filter((id) => id !== result.userId))
@@ -94,48 +96,42 @@ export default function OrgTreePage() {
     setTreeData(newTree);
 
     const receiverUserIdStr = String(result.userId);
-    const txnPromises = fromUserIds.map(async (fromId) => {
-      const transactions = await FromUserIdANDreceiverUserIdFetchTXNQuery(
-        receiverUserIdStr,
-        String(fromId)
-      );
-      return transactions
-        .sort((a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp))
-        .map((txn) => {
-          const txnHash = txn.transactionHash;
-          return {
-            userId: String(fromId),
-            "date&time": txn.blockTimestamp
-              ? new Date(Number(txn.blockTimestamp) * 1000).toLocaleString()
-              : "N/A",
-            amount: "$10.00",
-            blockTimestamp: txn.blockTimestamp,
-            txn: {
-              label: txnHash
-                ? `${txnHash.slice(0, 6)}...${txnHash.slice(-6)}`
-                : "N/A",
-              href: txnHash
-                ? `https://testnet.bscscan.com/tx/${txnHash}`
-                : "#",
-              hash: txnHash,
-            },
-          };
-        });
-    });
+
+    const levelRewards = _circleData?.levelData.flatMap((x) => x.levelData) || [];
+    const uplineRewards = _circleData?.uplineRewards || [];
+    const superUplineRewards = _circleData?.superUplineRewards || [];
+
+    const allRewards = [...levelRewards, ...uplineRewards, ...superUplineRewards];
+
+    console.log("All Rewards:", allIds,allRewards);
+
+    const txnPromises = allIds.filter(x=>x!==Number(result.userId)).map(x => {
+      console.log(x)
+      const data = allRewards.find((y: any) => y.fromUserId.toString() === x.toString());
+      if(!data) return;
+      return {
+        userId: data.fromUserId,
+        "date&time": data.blockTimestamp
+          ? new Date(Number(data.blockTimestamp) * 1000).toLocaleString()
+          : "N/A",
+        amount: "$10.00",
+        blockTimestamp: data.blockTimestamp,
+        rewardType: data.rewardType,
+        txn: {
+          label: data.transactionHash
+            ? `${data.transactionHash.slice(0, 6)}...${data.transactionHash.slice(-6)}`
+            : "N/A",
+          href: data.transactionHash
+            ? `https://testnet.bscscan.com/tx/${data.transactionHash}`
+            : "#",
+          hash: data.transactionHash,
+        },
+      };
+    })
 
     const txnResults = await Promise.all(txnPromises);
-    const flattened = txnResults.flat();
-
-    const uniqueMap = new Map<string, any>();
-    for (const row of flattened) {
-      const hash = row.txn.hash;
-      if (!uniqueMap.has(hash)) {
-        const { hash: _, ...cleanRow } = row.txn;
-        uniqueMap.set(hash, { ...row, txn: cleanRow });
-      }
-    }
-
-    setCircleData(Array.from(uniqueMap.values()));
+    console.log(txnResults)
+    setCircleData(txnResults);
   };
 
   useEffect(() => {
@@ -213,34 +209,32 @@ export default function OrgTreePage() {
         {/* Root userId button */}
         <button
           onClick={() => handleChildClick(navigationStack[0])}
-          className={`px-4 py-2 rounded text-white transition ${
-            selectedchildUserId === null || selectedchildUserId === navigationStack[0]
-              ? "bg-green-700"
-              : "bg-blue-600 hover:bg-blue-800"
-          }`}
+          className={`px-4 py-2 rounded text-white transition ${selectedchildUserId === null || selectedchildUserId === navigationStack[0]
+            ? "bg-green-700"
+            : "bg-blue-600 hover:bg-blue-800"
+            }`}
         >
           {navigationStack[0]}
         </button>
 
         {/* Child buttons */}
         {childUserIds.map((id, index) => {
-  const isLast = index === childUserIds.length - 1;
-  const isSelected = selectedchildUserId === id;
-  const label = isLast
-    ? `Current (${navigationStack[0]}/${index + 1})`
-    : `${navigationStack[0]}/${index + 1}`;
-  return (
-    <button
-      key={id}
-      onClick={() => handleChildClick(id)}
-      className={`px-4 py-2 rounded text-white transition ${
-        isSelected ? "bg-green-700" : "bg-blue-600 hover:bg-blue-800"
-      }`}
-    >
-      {label}
-    </button>
-  );
-})}
+          const isLast = index === childUserIds.length - 1;
+          const isSelected = selectedchildUserId === id;
+          const label = isLast
+            ? `Current (${navigationStack[0]}/${index + 1})`
+            : `${navigationStack[0]}/${index + 1}`;
+          return (
+            <button
+              key={id}
+              onClick={() => handleChildClick(id)}
+              className={`px-4 py-2 rounded text-white transition ${isSelected ? "bg-green-700" : "bg-blue-600 hover:bg-blue-800"
+                }`}
+            >
+              {label}
+            </button>
+          );
+        })}
 
       </div>
 

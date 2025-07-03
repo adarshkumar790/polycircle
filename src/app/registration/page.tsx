@@ -89,6 +89,7 @@ export default function Register() {
     const fetchRebirths = async () => {
       setLoading(true);
       const { rebirths, error } = await getPendingRebirths(signer);
+      console.log("Rebirths:", rebirths);
       if (error) {
         setError(error);
         toast.error(error);
@@ -186,7 +187,7 @@ export default function Register() {
             REGISTER
           </button>
           {statusMessage && (
-            <p className="mt-2 text-sm text-center text-white">{statusMessage}</p>
+            <p className="mt-2 text-sm text-center text-white">Wait For some time</p>
           )}
         </div>
       </div>
