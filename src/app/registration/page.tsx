@@ -187,7 +187,7 @@ export default function Register() {
             REGISTER
           </button>
           {statusMessage && (
-            <p className="mt-2 text-sm text-center text-white">Wait For some time</p>
+            <p className="mt-2 text-sm text-center text-white">{statusMessage}</p>
           )}
         </div>
       </div>
