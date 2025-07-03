@@ -13,11 +13,13 @@ export default function Register() {
   const router = useRouter();
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
-  const [rebirths, setRebirths] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const refFromUrl = searchParams.get("ref") || "1";
+
   const [viewUserId, setViewUserId] = useState("");
+  const [rebirths, setRebirths] = useState<string[]>([]);
+  const [rebirthCheckLoading, setRebirthCheckLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [waitingForRebirthClear, setWaitingForRebirthClear] = useState(false);
 
   const {
     walletAddress,
@@ -29,6 +31,8 @@ export default function Register() {
     setReferralId,
     handleRegister,
   } = useRegister(refFromUrl);
+
+  const isReferralInRebirthQueue = referralId && rebirths.includes(referralId);
 
   const handleAutomaticLogin = async () => {
     if (!signer) {
@@ -71,15 +75,12 @@ export default function Register() {
       return;
     }
 
-    // Check if referralId is in rebirth list
-    const referralExistsInRebirths = rebirths.includes(referralId);
-
-    if (referralExistsInRebirths) {
-      toast.error("Referral ID is undergoing rebirth. Try a different ID or wait.");
+    if (rebirths.includes(referralId)) {
+      // toast.info("Referral ID is currently undergoing rebirth. Waiting...");
+      setWaitingForRebirthClear(true);
       return;
     }
 
-    // Proceed with normal registration
     handleRegister();
   };
 
@@ -87,20 +88,34 @@ export default function Register() {
     if (!signer) return;
 
     const fetchRebirths = async () => {
-      setLoading(true);
+      setRebirthCheckLoading(true);
       const { rebirths, error } = await getPendingRebirths(signer);
-      console.log("Rebirths:", rebirths);
+      console.log("rebirths", rebirths)
       if (error) {
         setError(error);
-        toast.error(error);
       } else {
         setRebirths(rebirths || []);
       }
-      setLoading(false);
+      setRebirthCheckLoading(false);
     };
 
     fetchRebirths();
-  }, [signer]);
+
+    // Keep polling every 5 seconds if waiting for rebirth to clear
+    const interval = setInterval(() => {
+      if (waitingForRebirthClear) {
+        fetchRebirths().then(() => {
+          const stillBlocked = referralId && rebirths.includes(referralId);
+          if (!stillBlocked && referralId) {
+            setWaitingForRebirthClear(false);
+            handleRegister();
+          }
+        });
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [signer, waitingForRebirthClear, referralId]);
 
   return (
     <div
@@ -173,6 +188,7 @@ export default function Register() {
           <p className="md:text-sm text-xs text-center">
             Please Double-Check The Inviter's ID Before Registering
           </p>
+
           <input
             type="text"
             placeholder="Enter Referral Id"
@@ -180,12 +196,49 @@ export default function Register() {
             onChange={(e) => setReferralId(e.target.value)}
             className="w-full px-4 py-2 rounded bg-slate-900 border border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-400"
           />
+
           <button
             onClick={handleRegisterWithCheck}
-            className="w-1/2 px-4 py-2 rounded bg-white text-purple-700 font-semibold shadow hover:bg-purple-100 transition"
+            className="w-1/2 px-4 py-2 rounded bg-white text-purple-700 font-semibold shadow hover:bg-purple-100 transition relative flex items-center justify-center"
           >
-            REGISTER
+            {rebirthCheckLoading || waitingForRebirthClear ? (
+              <div className="flex items-center gap-2">
+                
+                {waitingForRebirthClear
+                  ? "REGISTER"
+                  : "REGISTER"}
+              </div>
+            ) : (
+              "REGISTER"
+            )}
           </button>
+
+          {waitingForRebirthClear && (
+            <div className="flex items-center justify-center gap-2 text-white text-sm text-center">
+              {/* <svg
+                className="animate-spin h-4 w-4 text-yellow-400"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                />
+              </svg> */}
+              <span>Processing Registration...</span>
+            </div>
+          )}
+
           {statusMessage && (
             <p className="mt-2 text-sm text-center text-white">{statusMessage}</p>
           )}
