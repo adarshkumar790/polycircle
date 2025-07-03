@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { getFormattedId } from "./registerUser";
@@ -47,7 +48,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const filteredData = data.filter((row) =>
     columns.some((col) => {
-      const rawValue = String(row[col.accessor] || "").toLowerCase();
+      const rawValue = String(row[col?.accessor] || "").toLowerCase();
       const formattedValue =
         (col.accessor === "fromUserId" || col.accessor === "userId") &&
         formattedIdMap[row[col.accessor]]
