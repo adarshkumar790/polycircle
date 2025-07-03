@@ -247,9 +247,36 @@ console.log("_circleData", _circleData);
           <div className="text-white text-center">Loading tree...</div>
         )}
       </div>
-      <Link href="/trees">Tree</Link>
+       <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+          <li className="flex items-center">
+            <span className="inline-block w-8 h-8 rounded-full bg-white border border-gray-400 mr-2"></span>
+            Self
+          </li>
+          {/* <li className="flex items-center">
+            <span className="inline-block w-8 h-8 rounded-full bg-purple-400 border border-gray-400 mr-2"></span>
+            Direct
+          </li> */}
+          
+          <li className="flex items-center">
+            <span className="inline-block w-8 h-8 rounded-full bg-[#f87171] mr-2"></span>
+            Empty Circle
+          </li>
+         
+          <li className="flex items-center">
+            <span className="inline-block w-8 h-8 rounded-full bg-green-500 mr-2"></span>
+            Rebirth
+          </li>
+          <li className="flex items-center">
+            <span className="inline-block w-8 h-8 rounded-full bg-yellow-400 mr-2"></span>
+            Upline
+          </li>
+           <li className="flex items-center">
+            <span className="inline-block w-8 h-8 rounded-full bg-blue-500 mr-2"></span>
+            Super Upline
+          </li>
+        </ul>
 
-      <div className="w-full mb-8">
+      <div className="w-full mb-8 mt-4">
        {circleData && circleData.length &&  <DynamicTable
           title={config.title}
           circle={getCircleLabel()}

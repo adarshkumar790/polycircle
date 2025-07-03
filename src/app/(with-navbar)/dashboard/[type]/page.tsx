@@ -152,6 +152,7 @@ export default function DashboardTablePage() {
 
   return (
     <div className="bg-black min-h-screen flex justify-center">
+      
       <div className="w-full max-w-6xl md:p-4 p-1">
         <DynamicTable
           title={config.title}
