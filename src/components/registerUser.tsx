@@ -13,7 +13,9 @@ const T_USDT_ADDRESS = "0xa709b84e21bdd371d7bdadF3F61ee36128693450";
 // const POLYCIRCLE_ADDRESS = "0x980772c3EcA05d7D5D94D39e7c90383A4998c963";
 // const POLYCIRCLE_ADDRESS = "0xEdA1C181B8A88e5bFeEAffeeb91446e08acbe4E0";
 // const POLYCIRCLE_ADDRESS = "0xC901A6f3600e260ef80e5a7D50e2A08A86274ed6";
-const POLYCIRCLE_ADDRESS = "0x19Af3Fb1526C33cbc1C18081e86F2F7f79b4AfFd"
+// const POLYCIRCLE_ADDRESS = "0x19Af3Fb1526C33cbc1C18081e86F2F7f79b4AfFd";
+const POLYCIRCLE_ADDRESS = "0xF0Caab4Edde89d9CECB13bD8B83748844D6F912B";
+
 
 //for registration, we need to approve the USDT contract to spend our USDT tokens
 // and then call the register function on the PolyCircle contract with the referrer ID
