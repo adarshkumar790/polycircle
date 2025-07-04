@@ -128,7 +128,7 @@ export default function Trees({ data }: OrgChartTreeProps) {
     if (isRoot) {
       bgColor = "#d7dbdd";
     } else if (isVacant) {
-      bgColor = "#fc7a00"; 
+      bgColor = "#f87171"; 
     } else {
       if (circleData?.uplineRewards.find((x) => x.fromUserId === nodeDatum.name)) {
         bgColor = "#ffe342"; 
