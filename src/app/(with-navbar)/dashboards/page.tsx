@@ -63,6 +63,7 @@ const PolycircleDashboard = () => {
   const userId = useSelector((state: RootState) => state.user.userId);
   const dispatch = useDispatch<any>();
    const circleData = useSelector((state: RootState) => state.user.circleData);
+   console.log("circleData", circleData)
 
   const [userDetails, setUserDetails] = useState<any>(null);
   const [dashboardMainData, setDashboardData] = useState<DashboardRewards>();
