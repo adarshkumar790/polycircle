@@ -39,7 +39,7 @@ export default function RewardsPage() {
   const [formattedIds, setFormattedIds] = useState<Record<string, string>>({});
   const [referrerIds, setReferrerIds] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
-  const [entriesToShow, setEntriesToShow] = useState<number | "5">("5");
+const [entriesToShow, setEntriesToShow] = useState<"5" | "10" | "25" | "all">("5");
   const [searchText, setSearchText] = useState("");
 
   const rewards = levelData[selectedLevel] || [];
@@ -57,7 +57,10 @@ export default function RewardsPage() {
   });
 
   const displayedRewards =
-    entriesToShow === "5" ? filteredRewards : filteredRewards.slice(0, entriesToShow);
+  entriesToShow === "all"
+    ? filteredRewards
+    : filteredRewards.slice(0, parseInt(entriesToShow));
+
 
   const rewardPerEntry = LEVEL_REWARD_AMOUNTS[selectedLevel] || 0;
   const totalAmount = displayedRewards.length * rewardPerEntry;
@@ -126,10 +129,11 @@ export default function RewardsPage() {
     router.replace(`?level=${e.target.value}`);
   };
 
-  const handleEntriesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value;
-    setEntriesToShow(val === "5" ? "5" : parseInt(val));
-  };
+ const handleEntriesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const val = e.target.value as "5" | "10" | "25" | "all";
+  setEntriesToShow(val);
+};
+
 
   return (
     <div className="px-2 py-4 max-w-7xl mx-auto font-sans bg-black text-white">
@@ -187,6 +191,7 @@ export default function RewardsPage() {
               <option value="5">5</option>
               <option value="10">10</option>
               <option value="25">25</option>
+              <option value="100">100</option>
             </select>
           </div>
         </div>

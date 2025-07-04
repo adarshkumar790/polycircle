@@ -96,18 +96,19 @@ export default function OrgTreePage() {
     setTreeData(newTree);
 
     const receiverUserIdStr = String(result.userId);
-console.log("_circleData", _circleData);
+// console.log("_circleData", _circleData);
     const levelRewards = _circleData?.levelData.flatMap((x) => x.levelData) || [];
     const uplineRewards = _circleData?.uplineRewards || [];
     const superUplineRewards = _circleData?.superUplineRewards || [];
 
     const allRewards = [...levelRewards, ...uplineRewards, ...superUplineRewards];
 
-    console.log("All Rewards:", allIds,allRewards,_circleData);
+    // console.log("All Rewards:", allIds,allRewards,_circleData);
 
     const txnPromises = allIds.filter(x=>x!==Number(result.userId)).map(x => {
       console.log(x)
       const data = allRewards.find((y: any) => y.fromUserId.toString() === x.toString());
+      console.log("rewardType", data)
       if(!data) return;
       return {
         userId: data.fromUserId,

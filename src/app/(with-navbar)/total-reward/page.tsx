@@ -48,7 +48,7 @@ export default function RewardsPage() {
   const [formattedIds, setFormattedIds] = useState<Record<string, string>>({});
   const [referrerIds, setReferrerIds] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
-  const [entriesToShow, setEntriesToShow] = useState<number | "5">("5");
+const [entriesToShow, setEntriesToShow] = useState<"5" | "10" | "25" | "all">("5");
   const [searchText, setSearchText] = useState("");
 
   const rewards = levelData[selectedLevel] || [];
@@ -62,8 +62,11 @@ export default function RewardsPage() {
     );
   });
 
-  const displayedRewards =
-    entriesToShow === "5" ? filteredRewards : filteredRewards.slice(0, entriesToShow);
+const displayedRewards =
+  entriesToShow === "all"
+    ? filteredRewards
+    : filteredRewards.slice(0, parseInt(entriesToShow));
+
 
   const rewardPerEntry =
     tab === "generation" ? LEVEL_REWARD_AMOUNTS[selectedLevel] || 1 : 10;
@@ -142,10 +145,10 @@ export default function RewardsPage() {
     router.replace(`?level=${e.target.value}`);
   };
 
-  const handleEntriesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value;
-    setEntriesToShow(val === "5" ? "5" : parseInt(val));
-  };
+const handleEntriesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const val = e.target.value as "5" | "10" | "25" | "all";
+  setEntriesToShow(val);
+};
 
 
   return (
@@ -217,16 +220,17 @@ export default function RewardsPage() {
 
           <div className="flex items-center gap-2">
             <label className="text-sm font-medium">Show</label>
-            <select
-              value={entriesToShow}
-              onChange={handleEntriesChange}
-              className="bg-purple-800 border border-white text-white px-2 py-1 rounded text-sm"
-            >
-              <option value="all">All</option>
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="25">25</option>
-            </select>
+           <select
+            value={entriesToShow}
+  onChange={handleEntriesChange}
+  className="bg-purple-800 border border-white text-white px-2 py-1 rounded text-sm"
+>
+  <option value="all">All</option>
+  <option value="5">5</option>
+  <option value="10">10</option>
+  <option value="25">25</option>
+</select>
+
           </div>
         </div>
 
