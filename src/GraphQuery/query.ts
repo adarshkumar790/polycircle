@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const GRAPH_API_URL = "https://api.studio.thegraph.com/query/115468/lltpolycircle/version/latest";
+const GRAPH_API_URL = "https://api.studio.thegraph.com/query/112968/polycirclellt/version/latest";
 
 const ENDPOINTS = [
-  "https://api.studio.thegraph.com/query/115468/lltpolycircle/version/latest",
+  "https://api.studio.thegraph.com/query/112968/polycirclellt/version/latest",
 ];
 
 
@@ -35,64 +35,64 @@ export async function fetchFromGraph(query: string, variables?: any): Promise<an
 
 
 
-const REWARD_DISTRIBUTED_QUERY = `
-  query MyQuery($receiverUserId: String!) {
-    rewardDistributeds(
-      orderBy: fromUserId
-      where: { receiverUserId: $receiverUserId, rewardType_in: ["DIRECT", "DIRECT_REBIRTH"] }
-    ) {
-      blockTimestamp
-      receiverUserId
-      rewardType
-      transactionHash
-      fromUserId
-      amount
-      grossAmount
-    }
-  }
-`;
+// const REWARD_DISTRIBUTED_QUERY = `
+//   query MyQuery($receiverUserId: String!) {
+//     rewardDistributeds(
+//       orderBy: fromUserId
+//       where: { receiverUserId: $receiverUserId, rewardType_in: ["DIRECT", "DIRECT_REBIRTH"] }
+//     ) {
+//       blockTimestamp
+//       receiverUserId
+//       rewardType
+//       transactionHash
+//       fromUserId
+//       amount
+//       grossAmount
+//     }
+//   }
+// `;
 
-const UPLINE_REWARD_DISTRIBUTED_QUERY = `
-  query MyQuery($receiverUserId: String!) {
-    rewardDistributeds(
-      where: { 
-        receiverUserId: $receiverUserId, 
-        rewardType_in: ["UPLINE", "UPLINE_REBIRTH"]
-      }
-      orderBy: fromUserId
-      orderDirection: asc
-    ) {
-      blockTimestamp
-      receiverUserId
-      rewardType
-      transactionHash
-      fromUserId
-      amount
-      grossAmount
-    }
-  }
-`;
+// const UPLINE_REWARD_DISTRIBUTED_QUERY = `
+//   query MyQuery($receiverUserId: String!) {
+//     rewardDistributeds(
+//       where: { 
+//         receiverUserId: $receiverUserId, 
+//         rewardType_in: ["UPLINE", "UPLINE_REBIRTH"]
+//       }
+//       orderBy: fromUserId
+//       orderDirection: asc
+//     ) {
+//       blockTimestamp
+//       receiverUserId
+//       rewardType
+//       transactionHash
+//       fromUserId
+//       amount
+//       grossAmount
+//     }
+//   }
+// `;
 
-const SUPER_UPLINE_REWARD_DISTRIBUTED_QUERY = `
-  query MyQuery($receiverUserId: String!) {
-    rewardDistributeds(
-      where: { 
-        receiverUserId: $receiverUserId, 
-        rewardType_in: ["SUPER_UPLINE", "SUPER_UPLINE_REBIRTH"] 
-      }
-      orderBy: fromUserId
-      orderDirection: asc
-    ) {
-      blockTimestamp
-      receiverUserId
-      rewardType
-      transactionHash
-      fromUserId
-      amount
-      grossAmount
-    }
-  }
-`;
+// const SUPER_UPLINE_REWARD_DISTRIBUTED_QUERY = `
+//   query MyQuery($receiverUserId: String!) {
+//     rewardDistributeds(
+//       where: { 
+//         receiverUserId: $receiverUserId, 
+//         rewardType_in: ["SUPER_UPLINE", "SUPER_UPLINE_REBIRTH"] 
+//       }
+//       orderBy: fromUserId
+//       orderDirection: asc
+//     ) {
+//       blockTimestamp
+//       receiverUserId
+//       rewardType
+//       transactionHash
+//       fromUserId
+//       amount
+//       grossAmount
+//     }
+//   }
+// `;
 
 export const SUPER_UPLINE_TotalAmount_QUERY = `
   query SuperUplineQuery($receiverUserId: [String!]) {
@@ -125,18 +125,18 @@ export const UPLINE_TotalAmount_QUERY = `
 `;
 
 
-const DirectAmount_QUERY = `
-  query MyQuery($receiverUserId: String!) {
-    rewardDistributeds(
-      orderBy: fromUserId
-            where: { receiverUserId: $receiverUserId, rewardType_in: ["DIRECT", "DIRECT_REBIRTH"] }
+// const DirectAmount_QUERY = `
+//   query MyQuery($receiverUserId: String!) {
+//     rewardDistributeds(
+//       orderBy: fromUserId
+//             where: { receiverUserId: $receiverUserId, rewardType_in: ["DIRECT", "DIRECT_REBIRTH"] }
 
-    ) {
-      amount
-      grossAmount
-    }
-  }
-`;
+//     ) {
+//       amount
+//       grossAmount
+//     }
+//   }
+// `;
 
 const FROM_USERID_AND_RECEIVER_ID_FETCHTXN_QUERY = `
   query MyQuery($receiverUserId: String!, $fromuserId: String!) {

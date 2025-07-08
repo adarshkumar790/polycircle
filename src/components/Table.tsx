@@ -163,7 +163,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 value={entriesCount}
                 onChange={(e) => onEntriesChange?.(Number(e.target.value))}
               >
-                {[5, 10, 25, 50, 100].map((count) => (
+                {[5, 10, 25, 50, 100, 1000].map((count) => (
                   <option key={count} value={count}>
                     {count}
                   </option>

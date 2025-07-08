@@ -250,7 +250,7 @@ export default function OrgTreePage() {
       </div>
        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
           <li className="flex items-center">
-            <span className="inline-block w-8 h-8 rounded-full bg-white border border-gray-400 mr-2"></span>
+            <span className="inline-block w-8 h-8 rounded-full bg-white border text-white border-gray-400 mr-2"></span>
             Self
           </li>
           {/* <li className="flex items-center">
@@ -259,20 +259,20 @@ export default function OrgTreePage() {
           </li> */}
           
           <li className="flex items-center">
-            <span className="inline-block w-8 h-8 rounded-full bg-[#f87171] mr-2"></span>
+            <span className="inline-block w-8 h-8 rounded-full text-white bg-[#f87171] mr-2"></span>
             Empty Circle
           </li>
          
           <li className="flex items-center">
-            <span className="inline-block w-8 h-8 rounded-full bg-green-500 mr-2"></span>
+            <span className="inline-block w-8 h-8 rounded-full text-white bg-green-500 mr-2"></span>
             Rebirth
           </li>
           <li className="flex items-center">
-            <span className="inline-block w-8 h-8 rounded-full bg-yellow-400 mr-2"></span>
+            <span className="inline-block w-8 h-8 rounded-full text-white bg-yellow-400 mr-2"></span>
             Upline
           </li>
            <li className="flex items-center">
-            <span className="inline-block w-8 h-8 rounded-full bg-blue-500 mr-2"></span>
+            <span className="inline-block w-8 h-8 rounded-full text-white bg-blue-500 mr-2"></span>
             Super Upline
           </li>
         </ul>
