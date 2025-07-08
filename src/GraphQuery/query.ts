@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const GRAPH_API_URL = "https://api.studio.thegraph.com/query/112968/polycirclellt/version/latest";
+const GRAPH_API_URL = "https://api.studio.thegraph.com/query/112968/lltpolycircle/v0.0.1";
 
 const ENDPOINTS = [
-  "https://api.studio.thegraph.com/query/112968/polycirclellt/version/latest",
+  "https://api.studio.thegraph.com/query/112968/lltpolycircle/v0.0.1",
 ];
 
 

@@ -48,6 +48,8 @@ export default function OrgTreePage() {
   const [navigationStack, setNavigationStack] = useState<string[]>([]);
   const _circleData = useSelector((state: RootState) => state.user.circleData);
 
+  console.log("circleData tree", _circleData)
+
   const fetchTreeAndTransactions = async (id: number) => {
     const result = await getUserFullTree(signer as any, id);
     if (result.error) {
