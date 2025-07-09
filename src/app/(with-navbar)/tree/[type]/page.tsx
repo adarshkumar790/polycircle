@@ -18,6 +18,7 @@ const sharedTotalTeam = [
   { label: "Date & Time", accessor: "date&time" },
   { label: "Amount", accessor: "amount" },
   { label: "Txn", accessor: "txn" },
+  {label: "isLock", accessor: "isLock" }
 ];
 
 const tableConfigs: Record<
@@ -110,7 +111,7 @@ export default function OrgTreePage() {
     const txnPromises = allIds.filter(x=>x!==Number(result.userId)).map(x => {
       console.log(x)
       const data = allRewards.find((y: any) => y.fromUserId.toString() === x.toString());
-      console.log("rewardType", data)
+      console.log("rewardType_data", data)
       if(!data) return;
       return {
         userId: data.fromUserId,
@@ -129,7 +130,9 @@ export default function OrgTreePage() {
             : "#",
           hash: data.transactionHash,
         },
-      };
+        isLock: data?.isLock?"Locked":"" 
+              };
+              
     })
 
     const txnResults = await Promise.all(txnPromises);

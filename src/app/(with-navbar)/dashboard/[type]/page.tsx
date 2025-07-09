@@ -89,9 +89,11 @@ export default function DashboardTablePage() {
       { label: "Join Date & Time", accessor: "joinDateTime" },
       { label: "Amount", accessor: "amount" },
       { label: "Transaction Hash", accessor: "txn" },
+      {label: "Lock", accessor: "isLock"}
     ];
   };
 
+   console.log("isLocked", rewards)
   const formattedData = rewards.map((reward) => ({
     userId: reward.fromUserId,
     ...(type === "referral" || type === "referral-business"
@@ -111,6 +113,7 @@ export default function DashboardTablePage() {
       label: `${reward.transactionHash.slice(0, 8)}...${reward.transactionHash.slice(-8)}`,
       href: `https://testnet.bscscan.com/tx/${reward.transactionHash}`,
     },
+      isLock: reward.isLock?"Locked":""
   }));
 
   const tableConfigs: Record<string, { title: string; circle: string }> = {

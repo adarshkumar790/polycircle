@@ -204,7 +204,8 @@ export interface RewardDistributed {
   amount?: string;
   grossAmount?: string;
   childUserId?: string;
-
+  isLocked?: string;
+  isLock?:boolean;
 }
 
 interface GraphResponse {
@@ -350,6 +351,7 @@ export type Reward = {
   grossAmount?: string;
   level?: string;
   amount?: number;
+  isLock?: boolean;
 };
 
 export type LevelData = {
@@ -386,6 +388,7 @@ const levelRewards = (_data: any,
     blockTimestamp: r.blockTimestamp,
     transactionHash: r.transactionHash,
     grossAmount: r.grossAmount,
+    isLock: r.isLock
   }));
 
   levels[level] = rewards;
@@ -490,6 +493,7 @@ export async function fetchLevelRewards(
       transactionHash
       grossAmount
       level
+      isLock
     } 
     upline:rewardDistributeds(
       first:1000
@@ -504,6 +508,7 @@ export async function fetchLevelRewards(
       transactionHash
       grossAmount
       level
+      isLock
     } 
     super_upline:rewardDistributeds(
       first:1000
@@ -518,6 +523,7 @@ export async function fetchLevelRewards(
       transactionHash
       grossAmount
       level
+      isLock
     } 
     rebirths(
       where:{
@@ -530,7 +536,7 @@ export async function fetchLevelRewards(
      
   }`;
 
-  console.log("query", query, receiverUserIds, mainUserId)
+ // console.log("query", query, receiverUserIds, mainUserId)
   const res = await fetch(GRAPH_API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json","Authorization":"Bearer 4b8b1a7a29929a11b369940943430a8c" },
@@ -538,6 +544,7 @@ export async function fetchLevelRewards(
   });
 
   const { data } = await res.json();
+  console.log("data islock", data)
   return data;
   // const rewards = (data?.rewardDistributeds || []).map((r: any) => ({
   //   fromUserId: r.fromUserId,
@@ -681,6 +688,7 @@ async function fetchUplineData(receiverUserId: string) {
         blockTimestamp
         transactionHash
         amount
+        isLock
       }
     }
   `;
@@ -698,6 +706,7 @@ async function fetchUplineData(receiverUserId: string) {
     blockTimestamp: r.blockTimestamp,
     transactionHash: r.transactionHash,
     amount: r.amount || "0",
+    isLock: r.isLock
   }));
 }
 
@@ -715,6 +724,7 @@ async function fetchSuperUplineData(receiverUserId: string) {
         blockTimestamp
         transactionHash
         amount
+        isLock
       }
     }
   `;
