@@ -219,7 +219,7 @@ const [entriesToShow, setEntriesToShow] = useState<"5" | "10" | "25" | "all">("5
               <th className="px-2 py-2 min-w-[180px]">Join Date & Time</th>
               <th className="px-2 py-2 text-center min-w-[100px]">Amount</th>
               <th className="px-2 py-2 min-w-[200px]">Transaction Hash</th>
-              <th className="px-2 py-2 min-w-[200px]">Lock</th>
+              <th className="px-2 py-2 min-w-[200px]">TopUp Amount</th>
 
             </tr>
           </thead>

@@ -89,7 +89,7 @@ export default function DashboardTablePage() {
       { label: "Join Date & Time", accessor: "joinDateTime" },
       { label: "Amount", accessor: "amount" },
       { label: "Transaction Hash", accessor: "txn" },
-      {label: "Lock", accessor: "isLock"}
+      {label: "TopUp Amount", accessor: "isLock"}
     ];
   };
 

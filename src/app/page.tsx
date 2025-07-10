@@ -10,9 +10,9 @@ import React from "react";
 
 const HeroSection: React.FC = () => {
   return (
-    <div className="bg-black min-h-screen">
+    <div className="bg-black min-h-screen overflow-hidden">
       
-      <div className="relative w-full h-[90vh] overflow-hidden">
+      <div className="relative w-full h-[90vh] ">
         
         <video
           className="absolute inset-0 w-full h-full object-cover z-0"

@@ -18,7 +18,7 @@ const sharedTotalTeam = [
   { label: "Date & Time", accessor: "date&time" },
   { label: "Amount", accessor: "amount" },
   { label: "Txn", accessor: "txn" },
-  {label: "isLock", accessor: "isLock" }
+  {label: "TopUp Amount", accessor: "isLock" }
 ];
 
 const tableConfigs: Record<
