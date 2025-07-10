@@ -15,6 +15,7 @@ import LevelTimeIcon from "../Icon/LevelTime";
 import { Logout } from "./Logout";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/store";
+import { useUserIdCounter } from "./useUserCounter";
 
 
 const CloseMenu: React.FC<{ onClick?: () => void }> = ({ onClick }) => (
@@ -41,16 +42,16 @@ const Navbar: React.FC = () => {
   const [incomeOpen, setIncomeOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const logout = Logout();
-    // const circleData = useSelector((state: RootState) => state.user.circleData);
-  
-    const userId = useSelector((state: RootState) => state.user.userId);
-  
+  // const circleData = useSelector((state: RootState) => state.user.circleData);
+
+  const userId = useSelector((state: RootState) => state.user.userId);
+
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
   const toggleMyTeam = () => setMyTeamOpen((prev) => !prev);
   const toggleIncome = () => setIncomeOpen((prev) => !prev);
 
-  
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -74,9 +75,13 @@ const Navbar: React.FC = () => {
     };
   }, [menuOpen]);
 
+  const { count, loading, error } = useUserIdCounter();
+  console.log("counter", count)
+
+
   return (
     <nav className="w-full bg-black relative z-50">
-      <header className="flex justify-between items-center border-b border-purple-800 w-full pr-4 pl-4 py-0">
+      <header className="flex justify-between items-center border-b border-purple-800 w-full pr-4 pl-2 md:pl-4 py-0">
         <div>
           <a href="/">
             <Image
@@ -89,12 +94,17 @@ const Navbar: React.FC = () => {
           </a>
         </div>
         <div className="flex items-center gap-4">
-        <div className="flex items-center justify-center">
-          <div className="px-3 py-2 rounded-full bg-purple-900 text-white text-xs font-semibold shadow-md border border-gray-300 flex items-center gap-2">
-            <span>User Id :-</span>
-            <span className="text-purple-400 font-bold">{userId || ""}</span>
+          <div className="flex flex-row sm:flex-row items-center justify-center gap-1 sm:gap-6 md:gap-8 text-center">
+             <div className="text-white text-xs sm:text-base font-medium">
+                Users: <span className="font-semibold text-purple-300">{count}</span>
+             </div> 
+
+            <div className="px-2 py-2 rounded-full bg-purple-900 text-white text-xs sm:text-sm font-semibold shadow-md border border-gray-300 flex items-center gap-1">
+              <span>User Id:</span>
+              <span className="text-purple-400">{userId || ""}</span>
+            </div>
           </div>
-        </div>
+
 
           <button
             className="text-purple-400 focus:outline-none"
@@ -103,7 +113,7 @@ const Navbar: React.FC = () => {
           >
             <OpenMenuIcon />
           </button>
-          
+
         </div>
       </header>
 
@@ -117,7 +127,7 @@ const Navbar: React.FC = () => {
             ref={sidebarRef}
             className="absolute top-0 right-0 h-full w-60 bg-purple-900 border-l border-purple-800 shadow-lg flex flex-col p-6 space-y-10 md:space-y-6 overflow-y-auto"
           >
-            
+
             <CloseMenu onClick={toggleMenu} />
             <a
               href="/dashboards"
@@ -152,7 +162,7 @@ const Navbar: React.FC = () => {
                     className="flex items-center text-sm font-semibold text-white hover:text-purple-300 space-x-2"
                   >
                     <Image src="/logo/sponsor.svg" alt="sponsor" width={20} height={20} />
-                      Sponsorer Business
+                    Sponsorer Business
                   </a>
                   <a
                     href="/team-bussiness"
@@ -233,11 +243,11 @@ const Navbar: React.FC = () => {
               href="#"
               className="flex items-center space-x-2 text-white hover:text-purple-400 transition"
             > */}
-             
-              <button onClick={logout} className="flex items-center gap-3 text-white hover:text-purple-400 transition">
-                <SignoutIcon />
-                <span className="font-semibold">Sign Out</span>
-              </button>
+
+            <button onClick={logout} className="flex items-center gap-3 text-white hover:text-purple-400 transition">
+              <SignoutIcon />
+              <span className="font-semibold">Sign Out</span>
+            </button>
             {/* </a> */}
           </div>
         </div>
@@ -247,4 +257,3 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
- 

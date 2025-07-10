@@ -432,3 +432,19 @@ export async function getPendingRebirths(
     };
   }
 }
+
+export async function getUserIdCounter(
+  signer: any
+): Promise<{ count: string | null; error?: string }> {
+  try {
+    const contract = new Contract(POLYCIRCLE_ADDRESS, POLYCIRCLE_ABI, signer);
+    const counter: bigint = await contract._userIdCounter();
+    
+    return { count: counter.toString() };
+  } catch (error: any) {
+    return {
+      count: null,
+      error: error.reason || error.message || 'Failed to fetch user ID counter.',
+    };
+  }
+}
