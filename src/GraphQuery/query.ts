@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const GRAPH_API_URL = "http://65.2.179.122:8000/subgraphs/name/polycircle10";
+const GRAPH_API_URL = "http://65.2.179.122:8000/subgraphs/name/polycircle11";
 
 const ENDPOINTS = [
-  "http://65.2.179.122:8000/subgraphs/name/polycircle10",
+  "http://65.2.179.122:8000/subgraphs/name/polycircle11",
 ];
 
 
@@ -538,7 +538,7 @@ export async function fetchLevelRewards(
  // console.log("query", query, receiverUserIds, mainUserId)
   const res = await fetch(GRAPH_API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json","Authorization":"Bearer 4b8b1a7a29929a11b369940943430a8c" },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query, variables: { receiverUserIds, mainUserId } }),
   });
 
