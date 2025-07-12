@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const GRAPH_API_URL = "http://65.2.179.122:8000/subgraphs/name/polycircle9";
+const GRAPH_API_URL = "http://65.2.179.122:8000/subgraphs/name/polycircle10";
 
 const ENDPOINTS = [
-  "http://65.2.179.122:8000/subgraphs/name/polycircle9",
+  "http://65.2.179.122:8000/subgraphs/name/polycircle10",
 ];
 
 
