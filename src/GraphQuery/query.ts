@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const GRAPH_API_URL = "https://api.studio.thegraph.com/query/112968/polycircle/v0.0.1";
+const GRAPH_API_URL = "http://65.2.179.122:8000/subgraphs/name/polycircle9";
 
 const ENDPOINTS = [
-  "https://api.studio.thegraph.com/query/112968/polycircle/v0.0.1",
+  "http://65.2.179.122:8000/subgraphs/name/polycircle9",
 ];
 
 
@@ -15,7 +15,6 @@ export async function fetchFromGraph(query: string, variables?: any): Promise<an
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query, variables }),
       });
-
       if (!response.ok) throw new Error(`Graph endpoint failed: ${response.status}`);
       const result = await response.json();
 

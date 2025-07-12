@@ -1,4 +1,4 @@
-import { ethers, Signer } from "ethers";
+import { ethers, Signer, toBigInt } from "ethers";
 import T_USDT_ABI from "@/ABI/ERC20-ABI.json";
 import POLYCIRCLE_ABI from "@/ABI/polycircle-ABI.json";
 import { Contract } from "ethers";
@@ -28,7 +28,8 @@ const T_USDT_ADDRESS = "0xa709b84e21bdd371d7bdadF3F61ee36128693450";
 // const POLYCIRCLE_ADDRESS = "0xCBec72ebDA3f57601C35Dd663F220ee79e0a799A";
 // const POLYCIRCLE_ADDRESS = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
 // const POLYCIRCLE_ADDRESS = "0xD21455CCbb1550f284d3bA999993B1eaA3Bb3371";
-const POLYCIRCLE_ADDRESS = "0x6F8c38cf27567ab55d1924F2766182CbF7B67237";
+// const POLYCIRCLE_ADDRESS = "0x6F8c38cf27567ab55d1924F2766182CbF7B67237";
+const POLYCIRCLE_ADDRESS = "0x01cf58e264d7578D4C67022c58A24CbC4C4a304E"
 
 
 
@@ -284,6 +285,49 @@ export async function getFormattedId(
     };
   }
 }
+
+// export async function getFormattedId(
+//   signer: any, 
+//   userId: number
+// ): Promise<{ formattedId: string; error?: string }> {
+//   try {
+//     const contract = new Contract(POLYCIRCLE_ADDRESS, POLYCIRCLE_ABI, signer);
+
+//     const bnUserId = toBigInt(userId);
+
+//     // Get internal ID
+//     const internalId = await contract.userIdToId(bnUserId);
+
+//     // Get user details
+//     const user = await contract.users(internalId);
+
+//     if (!user.exists) {
+//       throw new Error("User not found");
+//     }
+
+//     if (user.mainId === 0) {
+//       return { formattedId: bnUserId.toString() };
+//     }
+
+//     const mainUser = await contract.users(user.mainId);
+//     const childIds: bigint[] = mainUser.childIds;
+
+//     for (let i = 0; i < childIds.length; i++) {
+//       if (childIds[i] === internalId) {
+//         const formatted = `${mainUser.userId.toString()}/${i + 1}`;
+//         return { formattedId: formatted };
+//       }
+//     }
+
+//     throw new Error("Child ID not found in parent's childIds array");
+//   } catch (error: any) {
+//     console.error("Error in getFormattedId:", error.message);
+//     return {
+//       formattedId: "",
+//       error: error.reason || error.message || "Failed to fetch formatted ID.",
+//     };
+//   }
+// }
 
 export async function getTotalEarningWithChildren(
   signer: any,
