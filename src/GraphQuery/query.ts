@@ -1,10 +1,12 @@
 import axios from 'axios';
 
-const GRAPH_API_URL = "https://api.studio.thegraph.com/query/112968/polycircles/version/latest";
+const GRAPH_API_URL = "https://api.studio.thegraph.com/query/112968/polycircles/v0.0.1";
 
 const ENDPOINTS = [
-  "https://api.studio.thegraph.com/query/112968/polycircles/version/latest",
+  "https://api.studio.thegraph.com/query/112968/polycircles/v0.0.1",
 ];
+
+// https://api.studio.thegraph.com/query/112968/polycircles/version/latest
 
 
 export async function fetchFromGraph(query: string, variables?: any): Promise<any> {
@@ -543,6 +545,7 @@ export async function fetchLevelRewards(
   });
 
   const { data } = await res.json();
+  
   console.log("data islock", data)
   return data;
   // const rewards = (data?.rewardDistributeds || []).map((r: any) => ({

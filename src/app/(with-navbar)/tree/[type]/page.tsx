@@ -12,6 +12,7 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/store";
 import Link from "next/link";
+import { getFormattedId } from "@/components/registerUser";
 
 const sharedTotalTeam = [
   { label: "User ID", accessor: "userId" },
@@ -48,6 +49,29 @@ export default function OrgTreePage() {
   const [selectedchildUserId, setSelectedchildUserId] = useState<string | null>(null);
   const [navigationStack, setNavigationStack] = useState<string[]>([]);
   const _circleData = useSelector((state: RootState) => state.user.circleData);
+  const [formattedRootId, setFormattedRootId] = useState<string | null>(null);
+
+  useEffect(() => {
+  const fetchFormattedRootId = async () => {
+    if (!signer || !userId) return;
+
+    try {
+      const res = await getFormattedId(signer, Number(userId));
+      if (res?.formattedId) {
+        setFormattedRootId(res.formattedId);
+      } else {
+        setFormattedRootId(String(userId));
+      }
+    } catch (err) {
+      setFormattedRootId(String(userId));
+    }
+  };
+
+  fetchFormattedRootId();
+}, [signer, userId]);
+
+
+  
 
   console.log("circleData tree", _circleData)
 
@@ -214,14 +238,16 @@ export default function OrgTreePage() {
       <div className="flex gap-2 flex-wrap justify-center mb-6">
         {/* Root userId button */}
         <button
-          onClick={() => handleChildClick(navigationStack[0])}
-          className={`px-4 py-2 rounded text-white transition ${selectedchildUserId === null || selectedchildUserId === navigationStack[0]
-            ? "bg-green-700"
-            : "bg-blue-600 hover:bg-blue-800"
-            }`}
-        >
-          {navigationStack[0]}
-        </button>
+  onClick={() => handleChildClick(navigationStack[0])}
+  className={`px-4 py-2 rounded text-white transition ${
+    selectedchildUserId === null || selectedchildUserId === navigationStack[0]
+      ? "bg-green-700"
+      : "bg-blue-600 hover:bg-blue-800"
+  }`}
+>
+  {formattedRootId ?? navigationStack[0]}
+</button>
+
 
         {/* Child buttons */}
         {childUserIds.map((id, index) => {
