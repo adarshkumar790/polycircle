@@ -63,7 +63,7 @@ const PolycircleDashboard = () => {
   const userId = useSelector((state: RootState) => state.user.userId);
   const dispatch = useDispatch<any>();
    const circleData = useSelector((state: RootState) => state.user.circleData);
-   console.log("circleData", circleData)
+   console.log("child", circleData?.childrebirths)
 
   const [userDetails, setUserDetails] = useState<any>(null);
   const [dashboardMainData, setDashboardData] = useState<DashboardRewards>();
@@ -82,100 +82,20 @@ const PolycircleDashboard = () => {
     totalGenerationReward: 0,
   });
 
-  // useEffect(() => {
-  //   if (!userId) return;
-  //   const fetchChildRebirths = async () => {
-  //     setLoading(true);
-  //     try {
-  //       const ids = await fetchAllChildRebirths(String(userId));
-  //       //   console.log(ids);
-  //       setchildUserIds(ids);
-  //     } catch (err) {
-  //       console.error("Failed to fetch child IDs", err);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchChildRebirths();
-  // }, [userId]);
+const referralId =
+  Array.isArray(circleData?.childrebirths) && circleData.childrebirths.length > 0
+    ? circleData.childrebirths[0].mainUserId
+    : userId;
 
-  // useEffect(() => {
-  //   if (!signer || !userId) return;
-  //   getUserDetails(signer as any, Number(userId))
-  //     .then(setUserDetails)
-  //     .catch(console.error)
-  //     .finally(() => setLoading(false));
-  // }, [signer, userId]);
+    const userID =
+  Array.isArray(circleData?.childrebirths) && circleData.childrebirths.length > 0
+    ? circleData.childrebirths[0].mainUserId
+    : userId;
 
-  // useEffect(() => {
-  //   if (!signer || !userId) return;
-  //   getUserFullTree(signer as any, userId as any)
-  //     .then(setTreeData)
-  //     .catch(console.error);
-  // }, [signer, userId]);
 
-  // useEffect(() => {
-  //   if (!signer || !userId) return;
-  //   getDirectReferrals(signer as any, userId as any)
-  //     .then((res) => setReferrals(res.referrals))
-  //     .catch(console.error)
-  //     .finally(() => setReferralsLoading(false));
-  // }, [signer, userId]);
 
-  // useEffect(() => {
-  //   if (!userId) return;
 
-  //   const fetchUplineAndSuperUpline = async () => {
-  //     try {
-  //       const receiverUserIds = [userId as any, ...childUserIds];
-  //       console.log(receiverUserIds);
-
-  //       const [superUplineData, uplineData] = await Promise.all([
-  //         superUplineToalAmount(receiverUserIds),
-  //         uplineToalAmount(receiverUserIds),
-  //       ]);
-
-  //       const superTotal = superUplineData.reduce(
-  //         (sum, item) => sum + Number(item.grossAmount) / 1_000_000,
-  //         0
-  //       );
-  //       const uplineTotal = uplineData.reduce(
-  //         (sum, item) => sum + Number(item.grossAmount) / 1_000_000,
-  //         0
-  //       );
-
-  //       setSuperUplineAmount(superTotal.toFixed(2));
-  //       setUplineAmount(uplineTotal.toFixed(2));
-  //     } catch (error) {
-  //       console.error("Error fetching Upline or Super Upline totals:", error);
-  //     }
-  //   };
-
-  //   const fetchDirect = async () => {
-  //     try {
-  //       const data = await DirectAmount(userId as any);
-  //       const total = data.reduce(
-  //         (sum, item) => sum + Number(item.grossAmount) / 1_000_000,
-  //         0
-  //       );
-  //       setDirectAmount(total.toFixed(2));
-  //       setDirectCount(data.length);
-  //     } catch (error) {
-  //       console.error("Error fetching Direct total:", error);
-  //     }
-  //   };
-
-  //   fetchUplineAndSuperUpline();
-  //   fetchDirect();
-  // }, [userId, childUserIds]);
-
-  // useEffect(() => {
-  //   fetchAllRewardsAndTeamCount()
-  //     .then(setData)
-  //     .catch(console.error)
-  //     .finally(() => setLoading(false));
-  // }, []);
-
+  
 
   const getLevelRewards = async (userId: string) => {
     const data = await getTotalReward([userId]);
@@ -186,16 +106,7 @@ const PolycircleDashboard = () => {
   useEffect(() => {
     if (!userId) return;
     getLevelRewards(userId)
-    // fetchLevelRewards([userId])
-    //   .then((levels) => {
-    //     const allRewards = Object.values(levels).flat();
-    //     const uniqueUserIds = new Set(allRewards.map((r) => r.fromUserId));
-    //     setGlobalAmount(allRewards.length * 50);
-    //     setTotalTeamAmount(allRewards.length * 50);
-    //     setTeamCount(uniqueUserIds.size);
-    //   })
-    //   .catch(console.error);
-
+   
   }, [userId]);
 
   const totalRefrell = (dashboardMainData?.referalTeam ?? 0) * 50 
@@ -221,37 +132,39 @@ const PolycircleDashboard = () => {
   return (
     <div className="min-h-screen bg-black text-white w-full">
       <div className="text-sm flex flex-col md:flex-row flex-wrap items-center justify-between gap-2 px-4 py-4 md:px-10">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-bold md:text-xl">Referral Link -</span>
+       
 
-          <Link
-            ref={linkRef}
-            href={`https://polycircle.io/registration?referralId=${userId}`}
-            className="text-purple-400 break-all text-xs md:text-xl"
-          >
-            https://polycircle.io?referralId={userId}
-          </Link>
+<div className="flex items-center gap-2 flex-wrap">
+  <span className="font-bold md:text-xl">Referral Link -</span>
 
-          {/* Copy Button */}
-          <button className="text-purple-400" title="Copy" onClick={handleCopy}>
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8 16h8M8 12h8m-6-4h6m2-2a2 2 0 012 2v8a2 2 0 01-2 2H8l-4 4V6a2 2 0 012-2h12z" />
-            </svg>
-          </button>
+  <Link
+    ref={linkRef}
+    href={`https://polycircle.io/registration?referralId=${referralId}`}
+    className="text-purple-400 break-all text-xs md:text-xl"
+  >
+    https://polycircle.io/registration?referralId={referralId}
+  </Link>
 
-          {/* WhatsApp Share Button */}
-          <a
-            href={`https://wa.me/?text=https://poly-circle.vercel.app/registration?referralId=${userId}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-green-500"
-            title="Share on WhatsApp"
-          >
-            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M20.52 3.48a12.12 12.12 0 00-17.12 0A11.93 11.93 0 002 12.01a11.78 11.78 0 001.64 6.07L2 22l4.06-1.56a11.95 11.95 0 0015.26-4.42 11.92 11.92 0 00-1.55-12.54zM12 20a8 8 0 01-4.3-1.23l-.31-.19-2.55.98.97-2.49-.2-.32a8 8 0 011.26-10.17 8.12 8.12 0 0111.38.3 8 8 0 01-.3 11.38A7.91 7.91 0 0112 20zm4.43-5.63c-.24-.12-1.42-.7-1.64-.78s-.38-.12-.53.12-.61.77-.75.94-.28.17-.52.06a6.6 6.6 0 01-1.93-1.18 7.2 7.2 0 01-1.33-1.65c-.14-.24 0-.37.1-.49s.24-.28.36-.43a1.63 1.63 0 00.24-.41.45.45 0 000-.43c-.07-.12-.52-1.26-.72-1.73s-.38-.38-.52-.39h-.43a.83.83 0 00-.6.28 2.51 2.51 0 00-.79 1.86 4.39 4.39 0 00.92 2.3 10.14 10.14 0 003.13 2.89 10.7 10.7 0 003.23 1.18c.45.07.86.07 1.18.04a2.17 2.17 0 001.44-1 1.8 1.8 0 00.13-1c-.06-.09-.22-.14-.46-.25z" />
-            </svg>
-          </a>
-        </div>
+  {/* Copy Button */}
+  <button className="text-purple-400" title="Copy" onClick={handleCopy}>
+    <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8 16h8M8 12h8m-6-4h6m2-2a2 2 0 012 2v8a2 2 0 01-2 2H8l-4 4V6a2 2 0 012-2h12z" />
+    </svg>
+  </button>
+
+  {/* WhatsApp Share Button */}
+  <a
+    href={`https://wa.me/?text=https://polycircle.io/registration?referralId=${referralId}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-green-500"
+    title="Share on WhatsApp"
+  >
+    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M20.52 3.48a12.12 12.12 0 00-17.12 0A11.93 11.93 0 002 12.01a11.78 11.78 0 001.64 6.07L2 22l4.06-1.56a11.95 11.95 0 0015.26-4.42 11.92 11.92 0 00-1.55-12.54zM12 20a8 8 0 01-4.3-1.23l-.31-.19-2.55.98.97-2.49-.2-.32a8 8 0 011.26-10.17 8.12 8.12 0 0111.38.3 8 8 0 01-.3 11.38A7.91 7.91 0 0112 20zm4.43-5.63c-.24-.12-1.42-.7-1.64-.78s-.38-.12-.53.12-.61.77-.75.94-.28.17-.52.06a6.6 6.6 0 01-1.93-1.18 7.2 7.2 0 01-1.33-1.65c-.14-.24 0-.37.1-.49s.24-.28.36-.43a1.63 1.63 0 00.24-.41.45.45 0 000-.43c-.07-.12-.52-1.26-.72-1.73s-.38-.38-.52-.39h-.43a.83.83 0 00-.6.28 2.51 2.51 0 00-.79 1.86 4.39 4.39 0 00.92 2.3 10.14 10.14 0 003.13 2.89 10.7 10.7 0 003.23 1.18c.45.07.86.07 1.18.04a2.17 2.17 0 001.44-1 1.8 1.8 0 00.13-1c-.06-.09-.22-.14-.46-.25z" />
+    </svg>
+  </a>
+</div>
 
 
       <div className="text-sm mt-4 flex flex-row gap-4">
@@ -259,7 +172,7 @@ const PolycircleDashboard = () => {
   <div className="flex flex-col gap-1">
     <div className="flex items-center gap-2">
       <span className="text-white font-semibold">User Id:</span>
-      <span className="text-purple-500 font-bold">{userId}</span>
+      <span className="text-purple-500 font-bold">{userID}</span>
     </div>
     <div className="flex items-center gap-2">
       <span className="text-white font-semibold">Status:</span>

@@ -534,9 +534,16 @@ export async function fetchLevelRewards(
         mainUserId,
         childUserId,
     }
+     childrebirths:rebirths 
+  (
+    where: {childUserId: $mainUserId}) 
+  {
+       mainUserId
+     }       
      
   }`;
-
+ 
+   
  // console.log("query", query, receiverUserIds, mainUserId)
   const res = await fetch(GRAPH_API_URL, {
     method: "POST",
@@ -674,6 +681,7 @@ export type DashboardRewards = {
   grandTotalAmount: number;
   uplineAmount: number;
   superUplineAmount: number;
+  childrebirths?:any[]
 };
 
 // UPLINE QUERY (correct reward types)
@@ -2498,10 +2506,11 @@ export const getTotalReward = async (
   data.uplineAmount = totalUplineAmount;
   data.superUplineAmount = totalSuperUplineAmount;
 
+
   data.grandTotalAmount = data.levelData.reduce((sum: number, item: LevelDataDetails) => {
     return sum + Number(item?.levelTeamAmount) || 0
   }, 0) + totalUplineAmount + totalSuperUplineAmount; // totalGenerationAmount + totalUplineAmount + totalSuperUplineAmount;
-
+data.childrebirths = _data.childrebirths;
   console.log(data);
   return data;
 };
