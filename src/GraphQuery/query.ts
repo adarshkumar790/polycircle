@@ -538,7 +538,7 @@ export async function fetchLevelRewards(
  // console.log("query", query, receiverUserIds, mainUserId)
   const res = await fetch(GRAPH_API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json","Authorization":"Bearer 4b8b1a7a29929a11b369940943430a8c" },
     body: JSON.stringify({ query, variables: { receiverUserIds, mainUserId } }),
   });
 
