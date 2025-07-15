@@ -150,7 +150,7 @@ export default function OrgTreePage() {
             ? `${data.transactionHash.slice(0, 6)}...${data.transactionHash.slice(-6)}`
             : "N/A",
           href: data.transactionHash
-            ? `https://testnet.bscscan.com/tx/${data.transactionHash}`
+            ? `https://polygonscan.com/tx/${data.transactionHash}`
             : "#",
           hash: data.transactionHash,
         },

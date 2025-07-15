@@ -21,7 +21,7 @@ export default function Footer() {
           </p>
           <p className="text-sm text-purple-500">
             Audited Smart Contract Address:{" "}
-            <span className="text-white">0x4e45b9A78d421ee2f3775B306B8600CaDC339c9d</span>
+            <span className="text-white">0x0209727cd80dB13723773ACA6cD1905FCDFDC035</span>
           </p>
         </div>
         <div className="flex flex-col space-y-3 w-full max-w-sm">

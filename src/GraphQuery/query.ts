@@ -1,12 +1,15 @@
 import axios from 'axios';
 
-const GRAPH_API_URL = "https://api.studio.thegraph.com/query/112968/polycircles/v0.0.1";
+const BASE_URL = "https://gateway.thegraph.com";
+const API_PATH = "/api";
+const SUBGRAPH_PATH = "/subgraphs/id";
+const SUBGRAPH_ID = process.env.NEXT_PUBLIC_SUBGRAPH_ID;
 
-const ENDPOINTS = [
-  "https://api.studio.thegraph.com/query/112968/polycircles/v0.0.1",
-];
+const GRAPH_API_URL = `${BASE_URL}${API_PATH}${SUBGRAPH_PATH}/${SUBGRAPH_ID}`;
 
-// https://api.studio.thegraph.com/query/112968/polycircles/version/latest
+const ENDPOINTS = [GRAPH_API_URL];
+
+console.log("GRAPH_API_URL:", GRAPH_API_URL);
 
 
 export async function fetchFromGraph(query: string, variables?: any): Promise<any> {

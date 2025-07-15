@@ -165,7 +165,7 @@ export default function TreeLevelViewer() {
                     <li key={idx}>
                       {txn.dateTime} | {txn.amount} |{" "}
                       <a
-                        href={`https://testnet.bscscan.com/tx/${txn.hash}`}
+                        href={`https://mumbai.polygonscan.com/tx/${txn.hash}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-600 underline"
@@ -203,7 +203,7 @@ export default function TreeLevelViewer() {
                         <li key={idx}>
                           {txn.dateTime} | {txn.amount} |{" "}
                           <a
-                            href={`https://testnet.bscscan.com/tx/${txn.hash}`}
+                            href={`https://mumbai.polygonscan.com/tx/${txn.hash}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 underline"

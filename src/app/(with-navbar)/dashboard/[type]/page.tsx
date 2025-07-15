@@ -111,7 +111,7 @@ export default function DashboardTablePage() {
             : `$${reward.amount}`,
     txn: {
       label: `${reward.transactionHash.slice(0, 8)}...${reward.transactionHash.slice(-8)}`,
-      href: `https://testnet.bscscan.com/tx/${reward.transactionHash}`,
+      href: `https://polygonscan.com/tx/${reward.transactionHash}`,
     },
       isLock: reward.isLock?"Locked":""
   }));
